@@ -156,11 +156,11 @@ class AutoTestPlane(AutoTest):
         
         self.progress("Setting sensor parameters")  
         # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+         #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
 
         #Set Optical Flow
         self.set_parameter("SIM_FLOW_ENABLE", 1)
@@ -200,11 +200,11 @@ class AutoTestPlane(AutoTest):
 
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        #self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        #self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
 
         #Set Optical Flow
         self.set_parameter("SIM_FLOW_ENABLE", 1)
@@ -242,11 +242,11 @@ class AutoTestPlane(AutoTest):
         
         self.progress("Setting sensor parameters")  
         # Set sensor parameters
-        #self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        #self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
 
         #Set Optical Flow
         self.set_parameter("SIM_FLOW_ENABLE", 1)
@@ -293,11 +293,11 @@ class AutoTestPlane(AutoTest):
 
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+         #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
         self.progress("test: Fly a mission from 1 to %u" % num_wp)
 
         #Enable Sensor Confirmation for CNF Logging
@@ -354,11 +354,11 @@ class AutoTestPlane(AutoTest):
 
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        #self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        #self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
         self.progress("test: Fly a mission from 1 to %u" % num_wp)
 
         #Enable Sensor Confirmation for CNF Logging
@@ -423,11 +423,11 @@ class AutoTestPlane(AutoTest):
             raise NotAchievedException("load pdlk_auto_stealth.txt failed")
 
 	    # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+         #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
         self.progress("test: Fly a mission from 1 to %u" % num_wp)
 
         #Enable Sensor Confirmation for CNF Logging
@@ -486,11 +486,11 @@ class AutoTestPlane(AutoTest):
             raise NotAchievedException("load pdlk_auto_stealth.txt failed")
 
 	    # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters, 
+         #meters, 
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #LSM303D
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
         self.progress("test: Fly a mission from 1 to %u" % num_wp)
 
         #Enable Sensor Confirmation for CNF Logging

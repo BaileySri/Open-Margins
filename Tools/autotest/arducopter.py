@@ -328,341 +328,21 @@ class AutoTestCopter(AutoTest):
             })
 
     #PADLOCK
-    # The initial layout was provided from the fly_auto_test function down below
-    # collects benign data for square mission
-    def fly_delivery(self, timeout=360):
-        # Fly mission the data gathering mission
-        self.progress("# Load PDLK Square Waypoints")
-        # load the waypoint count
-        num_wp = self.load_mission("pdlk_auto_square.txt")
-        if not num_wp:
-            raise NotAchievedException("load pdlk_auto_square.txt failed")
-        
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        #self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-        # Set flight speed, cm/s
-        self.set_parameter("WPNAV_SPEED", 1000)
-        #Delay for sensor settling
-        self.delay_sim_time(30)
-
-        self.progress("test: Fly a mission from 1 to %u" % num_wp)
-        self.takeoff(10)
-
-        # switch into AUTO mode
-        self.change_mode("AUTO")
-
-        # fly the mission
-        self.wait_waypoint(0, num_wp-1, timeout=500)
-        self.change_mode("RTL")
-
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("MOTORS DISARMED OK")
-
-        self.progress("Auto mission completed: passed!")
-        
-    #PADLOCK
-    # The initial layout was provided from the fly_auto_test function down below
-    # collects benign data for wave mission
-    def fly_auto_wave(self, timeout=360):
-        # Fly mission the data gathering mission
-        self.progress("# Load PDLK Data Gathering Waypoints")
-        # load the waypoint count
-        num_wp = self.load_mission("pdlk_auto_wave.txt")
-        if not num_wp:
-            raise NotAchievedException("load pdlk_auto_wave.txt failed")
-
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-        # Set flight speed, cm/s
-        self.set_parameter("WPNAV_SPEED", 1000)
-
-        self.progress("test: Fly a mission from 1 to %u" % num_wp)
-        self.takeoff(10)
-
-        # switch into AUTO mode
-        self.change_mode("AUTO")
-
-        # fly the mission
-        self.wait_waypoint(0, num_wp-1, timeout=500)
-        self.change_mode("RTL")
-
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("MOTORS DISARMED OK")
-
-        self.progress("Auto mission completed: passed!")
-        
-    #PADLOCK
-    # The initial layout was provided from the fly_auto_test function down below
-    # collects benign data for flying a circle
-    def fly_auto_circle(self, timeout=360):
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-
-	    # Takeoff and switch to circle
-        self.progress("Taking off")
-        self.takeoff(10)
-        self.set_rc(3, 1500)
-        # Calculated from Rotational Velocity -> Centripetal Acceleration
-        self.set_parameter("WPNAV_ACCEL",340)
-        self.set_parameter("CIRCLE_RATE", 19)
-        self.set_parameter("CIRCLE_RADIUS", 3000)
-        self.change_mode("CIRCLE")
-
-	    # Wait 120 seconds
-        self.progress("Starting 120 second delay.")
-        self.delay_sim_time(120)
-	
-	    # Finish test
-        self.progress("RTL and then Disarm")
-        self.change_mode("RTL")
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("MOTORS DISARMED OK")
-
-        self.progress("Auto mission completed: passed!")
-        
-    #PADLOCK
-    # This is our attack during idling, an aspect of Copters only
-    def fly_idle(self, timeout=360):
-
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-        # Set flight speed, cm/s
-        self.set_parameter("WPNAV_SPEED", 1000)
-        self.takeoff(25)
-        self.change_mode("GUIDED")
-        self.delay_sim_time(20)
-
-	    # Adjust the below parameter to change attack strength in autotest
-        # Attack value is in cm, delay is in seconds
-        Attack_Delay = 60
-        self.set_parameter("GPS_PDLK_E", 500)
-        self.set_parameter("GPS_PDLK_SLW_RAT", 0.25)
-        self.set_parameter("GPS_PDLK_N", 0)
-        self.set_parameter("GPS_PDLK_ATK", 1)
-        self.delay_sim_time(Attack_Delay)
-
-        # Disable and land
-        self.set_parameter("GPS_PDLK_ATK", 0)
-        self.change_mode("LAND")
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("Landed and Disarmed")
-
-        self.progress("Auto mission completed: passed!")
-
-    #PADLOCK
-    # Stealthy attack on Optical Flow sensor
-    def fly_idle_of(self, timeout=360):
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-        # Set flight speed, cm/s
-        self.set_parameter("WPNAV_SPEED", 1000)
-        self.takeoff(25)
-        self.change_mode("GUIDED")
-        self.delay_sim_time(20)
-        #Set Optical Flow primary
-        self.configure_EKFs_to_use_optical_flow_instead_of_GPS()
-
-	    # Adjust the below parameter to change attack strength in autotest
-        Attack_Delay = 40
-        # Positive RH rotation about x-axis gives West flow, corrected by moving East, rad/s
-        self.set_parameter("FLOW_PDLK_X", 0.003491) #0.2 degree/s tilt
-        self.set_parameter("FLOW_PDLK_ATK", 1)
-        self.delay_sim_time(Attack_Delay)
-
-        # Disable and land
-        self.set_parameter("FLOW_PDLK_ATK", 0)
-        self.change_mode("LAND")
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("Landed and Disarmed")
-
-        self.progress("Auto mission completed: passed!")
-
-    #PADLOCK
-    # Stealthy attack utilizing our advanced attacker parameter for GPS
-    def fly_auto_stealth(self, timeout=360):
-
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-        # Set flight speed, cm/s
-        self.set_parameter("WPNAV_SPEED", 1000)
-
-        self.takeoff(25)
-        self.change_mode("GUIDED")
-        self.delay_sim_time(5)
-
-	    # Using advanced attack parameters so attack strength doesn't matter
-        Attack_Delay = 60
-        self.set_parameter("GPS_PDLK_ADV_ATK", 1)
-        # No alternating frames, always attack
-        self.set_parameter("GPS_PDLK_FAIL", -1)
-        self.set_parameter("GPS_PDLK_ATK", 1)
-        self.delay_sim_time(Attack_Delay)
-
-        # Disable and land
-        self.set_parameter("GPS_PDLK_ATK", 0)
-        self.change_mode("LAND")
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("Landed and Disarmed")
-
-        self.progress("Auto mission completed: passed!")
-
-    #PADLOCK
-    # Stealthy attack on Optical Flow sensor
-    def fly_auto_stealth_of(self, timeout=360):
-
-        self.progress("Setting sensor parameters")        
-        # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 2.5) #meters, NEO-M8N
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters, ZED-F9P
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
-        self.set_parameter("PDLK_CHOI_CI", 0)
-
-        #Set Optical Flow
-        self.set_parameter("SIM_FLOW_ENABLE", 1)
-        self.set_parameter("FLOW_TYPE", 10)
-        self.set_analog_rangefinder_parameters()
-        self.reboot_sitl()
-
-        #Enable Sensor Confirmation for CNF Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
-        # Set flight speed, cm/s
-        self.set_parameter("WPNAV_SPEED", 1000)
-        self.takeoff(25)
-        self.change_mode("GUIDED")
-        self.delay_sim_time(20)
-        #Set Optical Flow primary
-        self.configure_EKFs_to_use_optical_flow_instead_of_GPS()
-
-	    # Adjust the below parameter to change attack strength in autotest
-        # Attack value is in cm, delay is in seconds
-        Attack_Delay = 60
-        self.set_parameter("FLOW_PDLK_ADV", 1)
-        self.set_parameter("FLOW_PDLK_ATK", 1)
-        self.delay_sim_time(Attack_Delay)
-
-        # Disable and land
-        self.set_parameter("FLOW_PDLK_ATK", 0)
-        self.change_mode("LAND")
-        # wait for disarm
-        self.wait_disarmed()
-        self.progress("Landed and Disarmed")
-
-        self.progress("Auto mission completed: passed!")
-
-    #PADLOCK
-    # The initial layout was provided from the fly_auto_test function down below
-    def fly_adversarial(self, timeout=360):
+    # Fly a rectangle shaped mission where the GPS is spoofed part way
+    def attack_gps(self, timeout=360):
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
-        num_wp = self.load_mission("pdlk_auto_motion.txt")
+        num_wp = self.load_mission("rectangle.txt")
         if not num_wp:
-            raise NotAchievedException("load pdlk_auto_motion.txt failed")
+            raise NotAchievedException("load rectangle.txt failed")
         
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 0.4) #meters
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
         self.set_parameter("PDLK_CHOI_CI", 0)
         
         #Set Optical Flow
@@ -685,7 +365,7 @@ class AutoTestCopter(AutoTest):
         # fly the mission
         # wait until 100m from home
         try:
-            self.wait_current_waypoint(wpnum=2, timeout=120)
+            self.wait_distance(100, timeout=120)
         except Exception as e:
             if self.use_map:
                 self.show_gps_and_sim_positions(False)
@@ -708,21 +388,20 @@ class AutoTestCopter(AutoTest):
 
     #PADLOCK
     # The initial layout was provided from the fly_auto_motion function above
-    def fly_adversarial_of(self, timeout=360):
+    def attack_of(self, timeout=360):
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
-        num_wp = self.load_mission("pdlk_auto_motion.txt")
+        num_wp = self.load_mission("rectangle.txt")
         if not num_wp:
-            raise NotAchievedException("load pdlk_auto_motion.txt failed")
+            raise NotAchievedException("load rectangle.txt failed")
         
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 0.4) #meters
-        #self.set_parameter("SIM_PDLK_GPS", 0.01) #meters
-        self.set_parameter("SIM_PDLK_GPS_SPD", 50) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.02943) #LSM303D
-        self.set_parameter("SIM_PDLK_GYRO", 0.00384) #L3GD20H
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
         self.set_parameter("PDLK_CHOI_CI", 0)
         
         #Set Optical Flow
@@ -744,7 +423,7 @@ class AutoTestCopter(AutoTest):
         self.change_mode("AUTO")
 
         # fly the mission
-        # wait until 100m from home
+        # wait until 150m from home
         try:
             self.wait_distance(distance=150, accuracy=5, timeout=120)
         except Exception as e:
@@ -9392,51 +9071,16 @@ class AutoTestCopter(AutoTest):
             ("CopterMission",
              "Fly copter mission",
              self.fly_auto_test),
-             
-             #PADLOCK
-            ("Delivery",
-             "Fly a mission with no adversary imitating a neighbourhood block",
-             self.fly_delivery),
-             
-            #PADLOCK
-            ("AutoCircle",
-            "Fly a circle mission for data",
-            self.fly_auto_circle),
             
             #PADLOCK
-            ("AutoWave",
-            "Fly a straight path with varied altitude for data",
-            self.fly_auto_wave),
-            
-            #PADLOCK
-            ("Adversarial",
-            "Fly the neighbourhood block mission but with adversarial influence",
-            self.fly_adversarial),
+            ("AttackGPS",
+            "Fly the rectangular mission but with GPS spoofing",
+            self.attack_gps),
 
             #PADLOCK
-            ("AdversarialOF",
-            "Same as Adversarial but with influence on optical flow sensor",
-            self.fly_adversarial_of),
-            
-            #PADLOCK
-            ("Idle",
-            "Raise altitude in guided mode, then attack",
-            self.fly_idle),
-
-            #PADLOCK
-            ("IdleOF",
-            "Raise altitude in guided mode, then attack the optical flow",
-            self.fly_idle_of),
-
-            #PADLOCK
-            ("AutoStealth",
-            "Always attack the gps under detection threshold",
-            self.fly_auto_stealth),
-
-            #PADLOCK
-            ("AutoStealthOF",
-            "Always attack the flow rate under detection threshold",
-            self.fly_auto_stealth_of),
+            ("AttackOF",
+            "Fly the rectangular mission but with OF spoofing",
+            self.attack_of),
 
             ("TakeoffAlt",
              "Test Takeoff command altitude",

@@ -108,7 +108,7 @@ void AP_InertialSensor_SITL::generate_accel()
         // minimum noise levels are 2 bits, but averaged over many
         // samples, giving around 0.01 m/s/s
         //PADLOCK
-        //I'm overwriting the noise values with the paramterized values
+        //I'm overwriting the noise values with the parameterized values
         float accel_noise = sitl->pdlk_acc_noise;
         float noise_variation = 0;
         // this smears the individual motor peaks somewhat emulating physical motors
