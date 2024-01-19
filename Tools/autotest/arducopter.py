@@ -387,7 +387,8 @@ class AutoTestCopter(AutoTest):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # The initial layout was provided from the fly_auto_motion function above
+    # Fly a rectangle mission where the optical flow is spoofed part way.
+    # This is done by flying in AUTO then disabling GPS and enabling OF in EKF
     def attack_of(self, timeout=360):
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
@@ -447,6 +448,70 @@ class AutoTestCopter(AutoTest):
         self.wait_disarmed()
         self.progress("Landed and Disarmed")
 
+        self.progress("Auto mission completed: passed!")
+
+    #PADLOCK
+    # Fly a rectangle shaped mission where the Barometer is spoofed part way
+    def attack_bar(self, timeout=360):
+        # Fly mission the data gathering mission
+        self.progress("# Load PDLK Attack Waypoints")
+        # load the waypoint count
+        num_wp = self.load_mission("rectangle.txt")
+        if not num_wp:
+            raise NotAchievedException("load rectangle.txt failed")
+        
+        self.progress("Setting sensor parameters")        
+        # Set sensor parameters
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
+        self.set_parameter("PDLK_CHOI_CI", 0)
+        
+        #Set Optical Flow
+        self.set_parameter("SIM_FLOW_ENABLE", 1)
+        self.set_parameter("FLOW_TYPE", 10)
+        self.set_analog_rangefinder_parameters()
+        self.reboot_sitl()
+
+        #Enable Sensor Confirmation for CNF Logging
+        self.set_parameter("PDLK_SNSR_CONF", 1)
+        # Set flight speed, cm/s
+        self.set_parameter("WPNAV_SPEED", 1000)
+
+        self.progress("test: Fly a mission from 1 to %u" % num_wp)
+        self.takeoff(20)
+
+        # switch into AUTO mode
+        self.change_mode("AUTO")
+
+        # fly the mission
+        # wait until 100m from home
+        try:
+            self.wait_distance(100, timeout=120)
+        except Exception as e:
+            if self.use_map:
+                self.show_gps_and_sim_positions(False)
+            raise e
+
+	    # Adjust the below parameter to change attack strength in autotest
+        self.set_parameter("BARO_PDLK_CHAN", 7) #RC Channel 7 enables the attack
+        pressure = self.mav.recv_match(type='SCALED_PRESSURE',
+                                            blocking=True).press_abs * 100
+        self.set_parameter("BARO_PDLK_PRES", pressure + 100)
+        # Enable attack
+        self.set_rc(7, 1700)
+
+        # Allow the attack time to deviate the QuadCopters path
+        self.delay_sim_time(60) #seconds
+        self.set_rc(7, 1200)
+        self.change_mode("LAND")
+        # wait for disarm
+        self.wait_disarmed()
+        self.progress("Landed and Disarmed")
+        
+        # Because of how far the UAV moves it won't disarm before the end of the test
+        # and will flag as failed but the data file will be placed in the buildlogs folder
         self.progress("Auto mission completed: passed!")
 
     # fly a square in alt_hold mode
@@ -9081,6 +9146,11 @@ class AutoTestCopter(AutoTest):
             ("AttackOF",
             "Fly the rectangular mission but with OF spoofing",
             self.attack_of),
+
+            #PADLOCK
+            ("AttackBar",
+            "Fly the rectangular mission but with Barometer spoofing",
+            self.attack_bar),
 
             ("TakeoffAlt",
              "Test Takeoff command altitude",
