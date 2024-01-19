@@ -514,6 +514,70 @@ class AutoTestCopter(AutoTest):
         # and will flag as failed but the data file will be placed in the buildlogs folder
         self.progress("Auto mission completed: passed!")
 
+    #PADLOCK
+    # Fly a rectangle shaped mission where the Rangefinder is spoofed part way
+    def attack_rf(self, timeout=360):
+        # Fly mission the data gathering mission
+        self.progress("# Load PDLK Attack Waypoints")
+        # load the waypoint count
+        num_wp = self.load_mission("rectangle.txt")
+        if not num_wp:
+            raise NotAchievedException("load rectangle.txt failed")
+        
+        self.progress("Setting sensor parameters")        
+        # Set sensor parameters
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
+        self.set_parameter("PDLK_CHOI_CI", 0)
+        
+        #Set Optical Flow
+        self.set_parameter("SIM_FLOW_ENABLE", 1)
+        self.set_parameter("FLOW_TYPE", 10)
+        self.set_analog_rangefinder_parameters()
+        self.reboot_sitl()
+
+        #Enable Sensor Confirmation for CNF Logging
+        self.set_parameter("PDLK_SNSR_CONF", 1)
+        # Set flight speed, cm/s
+        self.set_parameter("WPNAV_SPEED", 1000)
+
+        self.progress("test: Fly a mission from 1 to %u" % num_wp)
+        self.takeoff(20)
+
+        # switch into AUTO mode
+        self.change_mode("AUTO")
+
+        # fly the mission
+        # wait until 100m from home
+        try:
+            self.wait_distance(100, timeout=120)
+        except Exception as e:
+            if self.use_map:
+                self.show_gps_and_sim_positions(False)
+            raise e
+
+	    # Adjust the below parameter to change attack strength in autotest
+        self.set_parameter("RNGFND1_PDLK_ONE", 1) # One-step attack
+        self.set_parameter("RNGFND1_PDLK_DIS", -500) # 500cm closer to the ground
+        self.set_parameter("RNGFND1_PDLK_CHN", 7) # Channel 7 enables and disables spoofing
+        self.set_parameter("EK3_SRC1_POSZ", 2) # Use rangefinder for Z position
+        # Enable attack
+        self.set_rc(7, 1700)
+
+        # Allow the attack time to deviate the QuadCopters path
+        self.delay_sim_time(60) #seconds
+        self.set_rc(7, 1200)
+        self.change_mode("LAND")
+        # wait for disarm
+        self.wait_disarmed()
+        self.progress("Landed and Disarmed")
+        
+        # Because of how far the UAV moves it won't disarm before the end of the test
+        # and will flag as failed but the data file will be placed in the buildlogs folder
+        self.progress("Auto mission completed: passed!")
+
     # fly a square in alt_hold mode
     def fly_square(self, side=50, timeout=300):
 
@@ -9151,6 +9215,11 @@ class AutoTestCopter(AutoTest):
             ("AttackBar",
             "Fly the rectangular mission but with Barometer spoofing",
             self.attack_bar),
+
+            #PADLOCK
+            ("AttackRF",
+            "Fly the rectangular mission but with Rangefinder spoofing",
+            self.attack_rf),
 
             ("TakeoffAlt",
              "Test Takeoff command altitude",
