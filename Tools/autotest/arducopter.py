@@ -372,7 +372,7 @@ class AutoTestCopter(AutoTest):
             raise e
 
 	    # Adjust the below parameter to change attack strength in autotest
-        self.set_parameter("GPS_PDLK_N", -500) #cm
+        self.set_parameter("GPS_PDLK_E", -250) #cm
         self.set_parameter("GPS_PDLK_SLW_RAT", 0.1) #m/s
         self.set_parameter("GPS_PDLK_ATK", 1) #bool
 
@@ -437,7 +437,7 @@ class AutoTestCopter(AutoTest):
         self.configure_EKFs_to_use_optical_flow_instead_of_GPS()
 
 	    # Adjust the below parameter to change attack strength in autotest
-        self.set_parameter("FLOW_PDLK_X", 0.1745) #10 degree tilt
+        self.set_parameter("FLOW_PDLK_X", 0.003)
         self.set_parameter("FLOW_PDLK_ATK", 1)
 
         # Allow the attack time to deviate the QuadCopters path
@@ -496,9 +496,11 @@ class AutoTestCopter(AutoTest):
 
 	    # Adjust the below parameter to change attack strength in autotest
         self.set_parameter("BARO_PDLK_CHAN", 7) #RC Channel 7 enables the attack
-        pressure = self.mav.recv_match(type='SCALED_PRESSURE',
-                                            blocking=True).press_abs * 100
-        self.set_parameter("BARO_PDLK_PRES", pressure + 100)
+        # pressure = self.mav.recv_match(type='SCALED_PRESSURE',
+        #                                     blocking=True).press_abs * 100
+        # # This is what the parameter was originally supposed to be in field test
+        # self.set_parameter("BARO_PDLK_PRES", pressure + 100)
+        self.set_parameter("BARO_PDLK_PRES", 960)
         # Enable attack
         self.set_rc(7, 1700)
 
@@ -627,7 +629,7 @@ class AutoTestCopter(AutoTest):
         self.set_parameter("INS_PDLK_ATK", 1) # Setting this to 1 attacks the accelerometer
         # 0:Pass-through, 1:Zero/DoS, 2:Gaussian Noise, 4:Same on all axis
         self.set_parameter("INS_AX_EFF", 0) 
-        self.set_parameter("INS_ACC_D", 100) # cm/s/s
+        self.set_parameter("INS_ACC_F", -300) # cm/s/s
         # Enable attack
         self.set_rc(7, 1700)
 
@@ -692,7 +694,7 @@ class AutoTestCopter(AutoTest):
         self.set_parameter("INS_PDLK_ATK", 2) # Setting this to 2 attacks the gyroscope
         # 0:Pass-through, 1:Zero/DoS, 2:Gaussian Noise, 4:Same on all axis
         self.set_parameter("INS_AX_EFF", 0) 
-        self.set_parameter("INS_GYR_R", 8) # c-rad/s
+        self.set_parameter("INS_GYR_R", 25) # c-rad/s
         # Enable attack
         self.set_rc(7, 1700)
 
