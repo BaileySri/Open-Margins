@@ -87,7 +87,7 @@ void SensorConfirmation::initialize() {
 
 void SensorConfirmation::update() {
   const AP_InertialSensor *IMU = AP_InertialSensor::get_singleton();
-  const OpticalFlow *AP_OF = OpticalFlow::get_singleton();
+  const AP_OpticalFlow *AP_OF = AP_OpticalFlow::get_singleton();
 
   // Auxiliary Sensors
   sensors.mag.update();

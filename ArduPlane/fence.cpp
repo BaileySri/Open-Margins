@@ -2,7 +2,7 @@
 
 // Code to integrate AC_Fence library with main ArduPlane code
 
-#if AC_FENCE == ENABLED
+#if AP_FENCE_ENABLED
 
 // fence_check - ask fence library to check for breaches and initiate the response
 void Plane::fence_check()
@@ -43,23 +43,15 @@ void Plane::fence_check()
         return;
     }
 
-    const bool current_mode_breach = plane.control_mode_reason == ModeReason::FENCE_BREACHED;
-    const bool previous_mode_breach = plane.previous_mode_reason ==  ModeReason::FENCE_BREACHED;
-    const bool previous_mode_complete = (plane.control_mode_reason == ModeReason::RTL_COMPLETE_SWITCHING_TO_VTOL_LAND_RTL) ||
-                                        (plane.control_mode_reason == ModeReason::RTL_COMPLETE_SWITCHING_TO_FIXEDWING_AUTOLAND) ||
-                                        (plane.control_mode_reason == ModeReason::QRTL_INSTEAD_OF_RTL) ||
-                                        (plane.control_mode_reason == ModeReason::QLAND_INSTEAD_OF_RTL);
-    if (orig_breaches && (current_mode_breach || (previous_mode_breach && previous_mode_complete))) {
+    if (in_fence_recovery()) {
         // we have already triggered, don't trigger again until the
         // user disables/re-enables using the fence channel switch
         return;
     }
-    
-     if(new_breaches && plane.is_flying()) {
-         GCS_SEND_TEXT(MAV_SEVERITY_NOTICE, "Fence Breached");
-     }
 
-    if (new_breaches || orig_breaches) {
+    if (new_breaches) {
+        GCS_SEND_TEXT(MAV_SEVERITY_NOTICE, "Fence Breached");
+
         // if the user wants some kind of response and motors are armed
         const uint8_t fence_act = fence.get_action();
         switch (fence_act) {
@@ -83,7 +75,7 @@ void Plane::fence_check()
 
             Location loc;
             if (fence.get_return_rally() != 0 || fence_act == AC_FENCE_ACTION_RTL_AND_LAND) {
-                loc = rally.calc_best_rally_or_home_location(current_loc, get_RTL_altitude_cm());
+                loc = calc_best_rally_or_home_location(current_loc, get_RTL_altitude_cm());
             } else {
                 //return to fence return point, not a rally point
                 if (fence.get_return_altitude() > 0) {
@@ -91,7 +83,7 @@ void Plane::fence_check()
                     loc.alt = home.alt + 100.0f * fence.get_return_altitude();
                 } else if (fence.get_safe_alt_min() >= fence.get_safe_alt_max()) {
                     // invalid min/max, use RTL_altitude
-                    loc.alt = home.alt + g.RTL_altitude_cm;
+                    loc.alt = home.alt + g.RTL_altitude*100;
                 } else {
                     // fly to the return point, with an altitude half way between
                     // min and max
@@ -122,10 +114,10 @@ void Plane::fence_check()
             break;
         }
 
-        AP::logger().Write_Error(LogErrorSubsystem::FAILSAFE_FENCE, LogErrorCode(new_breaches));
+        LOGGER_WRITE_ERROR(LogErrorSubsystem::FAILSAFE_FENCE, LogErrorCode(new_breaches));
     } else if (orig_breaches) {
         // record clearing of breach
-        AP::logger().Write_Error(LogErrorSubsystem::FAILSAFE_FENCE, LogErrorCode::ERROR_RESOLVED);
+        LOGGER_WRITE_ERROR(LogErrorSubsystem::FAILSAFE_FENCE, LogErrorCode::ERROR_RESOLVED);
     }
 }
 
@@ -133,13 +125,25 @@ bool Plane::fence_stickmixing(void) const
 {
     if (fence.enabled() &&
         fence.get_breaches() &&
-        control_mode->is_guided_mode())
+        in_fence_recovery())
     {
         // don't mix in user input
         return false;
     }
     // normal mixing rules
     return true;
+}
+
+bool Plane::in_fence_recovery() const
+{
+    const bool current_mode_breach = plane.control_mode_reason == ModeReason::FENCE_BREACHED;
+    const bool previous_mode_breach = plane.previous_mode_reason ==  ModeReason::FENCE_BREACHED;
+    const bool previous_mode_complete = (plane.control_mode_reason == ModeReason::RTL_COMPLETE_SWITCHING_TO_VTOL_LAND_RTL) ||
+                                        (plane.control_mode_reason == ModeReason::RTL_COMPLETE_SWITCHING_TO_FIXEDWING_AUTOLAND) ||
+                                        (plane.control_mode_reason == ModeReason::QRTL_INSTEAD_OF_RTL) ||
+                                        (plane.control_mode_reason == ModeReason::QLAND_INSTEAD_OF_RTL);
+
+    return current_mode_breach || (previous_mode_breach && previous_mode_complete);
 }
 
 #endif

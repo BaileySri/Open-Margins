@@ -28,7 +28,9 @@ void Copter::tuning()
 
     const uint16_t radio_in = rc6->get_radio_in();
     float tuning_value = linear_interpolate(g2.tuning_min, g2.tuning_max, radio_in, rc6->get_radio_min(), rc6->get_radio_max());
+#if HAL_LOGGING_ENABLED
     Log_Write_Parameter_Tuning(g.radio_tuning, tuning_value, g2.tuning_min, g2.tuning_max);
+#endif
 
     switch(g.radio_tuning) {
 
@@ -188,6 +190,10 @@ void Copter::tuning()
 #if MODE_SYSTEMID_ENABLED == ENABLED
         copter.mode_systemid.set_magnitude(tuning_value);
 #endif
+        break;
+
+    case TUNING_POS_CONTROL_ANGLE_MAX:
+        pos_control->set_lean_angle_max_cd(tuning_value * 100.0);
         break;
     }
 }

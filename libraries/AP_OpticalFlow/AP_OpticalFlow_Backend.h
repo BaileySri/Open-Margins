@@ -15,24 +15,28 @@
 #pragma once
 
 /*
-  OpticalFlow backend class for ArduPilot
+  AP_OpticalFlow backend class for ArduPilot
  */
 
 #include "AP_OpticalFlow.h"
 
+#include <AP_HAL/Semaphores.h>
+
 class OpticalFlow_backend
 {
-    friend class OpticalFlow;
+    friend class AP_OpticalFlow;
 
 public:
-    OpticalFlow::OpticalFlow_state pdlkState;
+    AP_OpticalFlow::OpticalFlow_state pdlkState;
 
     // constructor
-    OpticalFlow_backend(OpticalFlow &_frontend);
+    OpticalFlow_backend(AP_OpticalFlow &_frontend);
     virtual ~OpticalFlow_backend(void);
-    
+
+    CLASS_NO_COPY(OpticalFlow_backend);
+
     // init - initialise sensor
-    virtual void init() = 0;
+    virtual void init() {}
 
     // read latest values from sensor and fill in x,y and totals.
     virtual void update() = 0;
@@ -47,10 +51,10 @@ public:
 
 protected:
     // access to frontend
-    OpticalFlow &frontend;
+    AP_OpticalFlow &frontend;
 
     // update the frontend
-    void _update_frontend(const struct OpticalFlow::OpticalFlow_state &state);
+    void _update_frontend(const struct AP_OpticalFlow::OpticalFlow_state &state);
 
     // get the flow scaling parameters
     Vector2f _flowScaler(void) const { return Vector2f(frontend._flowScalerX, frontend._flowScalerY); }

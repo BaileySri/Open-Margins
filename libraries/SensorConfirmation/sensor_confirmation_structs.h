@@ -269,7 +269,7 @@ struct OF {
   Vector2f VelNE;     // m/s, Velocity in EN frame (North/East)
   Vector2f Err;       // m/s. Error in velocity in NE frame
 
-  bool update(const OpticalFlow *frontend, const RF &currRF) {
+  bool update(const AP_OpticalFlow *frontend, const RF &currRF) {
     uint32_t newTimestamp = frontend->last_update(); // ms
 
     if ((newTimestamp - Timestamp) > 0) {

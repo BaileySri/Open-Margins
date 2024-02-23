@@ -23,7 +23,7 @@
 
 extern const AP_HAL::HAL& hal;
 
-OpticalFlow_backend::OpticalFlow_backend(OpticalFlow &_frontend) :
+OpticalFlow_backend::OpticalFlow_backend(AP_OpticalFlow &_frontend) :
     frontend(_frontend)
 {
 }
@@ -33,14 +33,14 @@ OpticalFlow_backend::~OpticalFlow_backend(void)
 }
 
 // update the frontend
-void OpticalFlow_backend::_update_frontend(const struct OpticalFlow::OpticalFlow_state &state)
+void OpticalFlow_backend::_update_frontend(const struct AP_OpticalFlow::OpticalFlow_state &state)
 {
     //PADLOCK
     bool attack = frontend.CHANNEL > 0 ? (RC_Channels::rc_channel(frontend.CHANNEL - 1)->get_radio_in() > 1600) || frontend._pdlk_attack_enable == 1 : frontend._pdlk_attack_enable == 1;
     if( attack ){
         Vector2f attack_state{frontend._pdlk_attack_x + state.bodyRate.x,
                         frontend._pdlk_attack_y + state.bodyRate.y};
-        pdlkState = OpticalFlow::OpticalFlow_state{ state.surface_quality,
+        pdlkState = AP_OpticalFlow::OpticalFlow_state{ state.surface_quality,
                                                     attack_state,
                                                     state.bodyRate};
         frontend.update_state(pdlkState);
@@ -56,12 +56,7 @@ void OpticalFlow_backend::_applyYaw(Vector2f &v)
     if (is_zero(yawAngleRad)) {
         return;
     }
-    float cosYaw = cosf(yawAngleRad);
-    float sinYaw = sinf(yawAngleRad);
-    float x = v.x;
-    float y = v.y;
-    v.x = cosYaw * x - sinYaw * y;
-    v.y = sinYaw * x + cosYaw * y;
+    v.rotate(yawAngleRad);
 }
 
 #endif
