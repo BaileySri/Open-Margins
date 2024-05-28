@@ -1,18 +1,22 @@
-# Controlling a UAV with Sensor Spoofing: More Than A GNSS Problem
+# Assessing UAV Sensor Spoofing: More Than A GNSS Problem
 
 ## Paper Abstract
 Autonomous navigation systems present a unique attack surface:
-their sensors. This attack surface allows for sensor spoofing
-attacks, where an adversary gains control of a UAV by
-manipulating one of its sensors to report incorrect data. Prior
-research has shown that many of the sensors being use on
-unmanned aerial vehicles (UAVs) are vulnerable to sensor
-spoofing attacks. However, most work on UAVs only considers
-spoofing the signals from a Global Navigation Satellite
-System (GNSS). Concretely, we show that an adversary spoofing
-just one of the sensors that is use to attenuate the state
-estimate of a UAV can control or crash the UAV, even when
-the GNSS is faithful.
+their sensors. This attack surface allows for sensor spoofing attacks,
+where an adversary gains control of an unmanned aerial vehicle
+(UAV) by manipulating one of its sensors to report incorrect data.
+Prior research has shown that many of the sensors, including those
+on UAVs, are vulnerable to sensor spoofing attacks. However, most
+of the work on sensor spoofing either focuses solely on the vulnera-
+bility of the sensor or considers only the Global Navigation Satellite
+System (GNSS) when attacking a UAV. The impact sensor spoofing
+has on UAVs and the extent of control an attacker can gain with
+different sensors is relatively unexplored. Concretely, we show that
+an adversary only needs to control one of the sensors a UAV uses
+for state estimation to control the UAV, even if the GNSS is faithful.
+We further characterize the extent of control an adversary can gain
+with each sensor and discuss why current defenses are insufficient
+to stop these attacks
 
 ## How to install
 The modifications made to ArduPilot to embed sensor spoofing
