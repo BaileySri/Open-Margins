@@ -13,6 +13,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "AP_GPS_config.h"
+#include "AP_Math/vector3.h"
 
 #if AP_GPS_ENABLED
 
@@ -505,7 +506,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Param: PDLK_ADV_ATK
     // @DisplayName: GPS Advanced Sensor Attack
     // @Description: Enable/Disable the advanced attacker mode of sensor spoofing, requires PDLK_ATK == 1
-    // @Values: 0:Disable, 1:Enable
+    // @Values: 0:Disable, 1:Route Redirection
     // @User: Advanced
     AP_GROUPINFO("_PDLK_ADV_ATK", 39, AP_GPS, ADV_ATK, 0),
 
@@ -1081,11 +1082,12 @@ void AP_GPS::update_instance(uint8_t instance)
         static bool atk_started = false;
         static Location fence = { };
         // Take Over Attack Variables
-        static uint8_t mode[2] = {0, 0}; //0:Slow, 1:Offset, 2:Slow, 3:Hold
+        static uint32_t mode[2] = {0, 0}; //0:Slow, 1:Offset, 2:Slow, 3:Hold
         static uint32_t init_atk[2] = {0, 0}; //The number of updates to move the drones speed to 0
         static uint32_t take_over[2] = {0, 0}; //Loop incrementer for attack values for Latitude and Longitude respectively
         static Location last_lla; //Last spoofed longitude and latitude
         static Location mode_lla; //LLA value when switching modes
+        static Vector3f init_vel; //Original velocity
         static Vector3f last_vel; //Last spoofed velocity value
         static Vector3f mode_vel; //Velocity value when switching modes
         static const float TIME_RATIO = get_rate_ms(primary_instance)/1000.0F; //Number of updates in a second
@@ -1104,16 +1106,23 @@ void AP_GPS::update_instance(uint8_t instance)
             //As the attack is enabled
             fence = state[instance].location;
             last_vel = state[instance].velocity; //Dynamic Attack only considers positive North and East attack values
+            init_vel = last_vel;
             last_lla = state[instance].location;
             ATK_OFS[0] = ATK_OFS_NORTH;
             ATK_OFS[1] = ATK_OFS_EAST;
             atk_started = true;
             t1[0] = ceil(sqrtf(abs(ATK_OFS[0])/(SLOW_RATE*100))/TIME_RATIO); //iterations, Number of updates to reach time t1
             t1[1] = ceil(sqrtf(abs(ATK_OFS[1])/(SLOW_RATE*100))/TIME_RATIO); //iterations, "
-
+            if(SIMPLE_ATTACK == 1){
+                mode[0] = 3;
+                mode[1] = 3;
+            } else if(ADV_ATK == 1){
+                mode[0] = 1;
+                mode[1] = 1;
+            }
             #if CONFIG_HAL_BOARD == HAL_BOARD_SITL
             GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat, lng, alt): %i, %i, %i", fence.lat, fence.lng, fence.alt);
-            GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Beginning in mode 0, reducing velocity to 0.");
+            GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Beginning in mode %i.", mode[0]);
             #elif CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
             GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat,lng, alt): %li, %li, %li", fence.lat, fence.lng, fence.alt);
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Beginning in mode 0, reducing velocity to 0.");
@@ -1123,15 +1132,11 @@ void AP_GPS::update_instance(uint8_t instance)
             if(dt == 0){
                 dt = 1;
             }
-            if(SIMPLE_ATTACK == 1){
-                mode[0] = 3;
-                mode[1] = 3;
-            }
             for(int axis = 0; axis < 2; axis++){
                 //Mode logic, axis==0 is Latitude, axis==1 is Longitude
                 if(mode[axis] == 0 && ((abs(last_vel[axis]) - SLOW_RATE*TIME_RATIO) <= 0)){ //Next update puts us pass being idle
                     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Axis %i: Switch to mode 1, offsetting drone.\nExpected time for full attack: %.2f seconds",
-                                  axis, 2*t1[axis]* TIME_RATIO );
+                                  axis, 2*t1[axis]*TIME_RATIO );
                     //Start offsetting
                     mode[axis] = 1;
                     if(axis == 0){
@@ -1152,9 +1157,14 @@ void AP_GPS::update_instance(uint8_t instance)
                         mode_lla.lng = last_lla.lng;
                         mode_vel.y = last_vel.y;
                     }
-                } else if(mode[axis] == 2 && ((take_over[axis] - init_atk[axis]) >= 2* t1[axis])){ //We've reached t2, hold position
-                    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Axis %i: Switch to default mode, Holding position.", axis);
-                    mode[axis] = 99;
+                } else if(mode[axis] == 2 && ((take_over[axis] - init_atk[axis]) >= 2* t1[axis])){ //We've reached t2
+                    if(ADV_ATK == 1){
+                        GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Axis %i: Switching to initial velocity.", axis);
+                        mode[axis] = 4;
+                    } else{
+                        GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Axis %i: Switch to default mode, Holding position.", axis);
+                        mode[axis] = 99;
+                    }
                 }
             }
 
@@ -1186,6 +1196,10 @@ void AP_GPS::update_instance(uint8_t instance)
                 case 3: //One-Step Spoofing
                     state[instance].location.lat = fence.lat + static_cast<int32_t>(ATK_OFS[0] * 0.89831f); //Scaling factor
                     break;
+                case 4: //Replaying recorded velocity
+                    state[instance].location.lat = last_lla.lat + static_cast<int32_t>(init_vel[0] * 100 * dt/1000.0F * // V[0]*t
+                                                                                        0.89831f); //Scaling factor
+                    break;
                 default: //Holding position
                     state[instance].location.lat = last_lla.lat;
             }
@@ -1212,6 +1226,10 @@ void AP_GPS::update_instance(uint8_t instance)
                     break;
                 case 3: //One-Step Spoofing
                     state[instance].location.lng = fence.lng + static_cast<int32_t>(ATK_OFS[1] * lng_scale_factor); //Scaling factor
+                    break;
+                case 4: //Replaying recorded velocity
+                    state[instance].location.lng = last_lla.lng + static_cast<int32_t>(init_vel[1] * 100 * dt/1000.0F * //V[i-1]*t
+                                                                                        lng_scale_factor); //Scaling factor
                     break;
                 default: //Holding position
                     state[instance].location.lng = last_lla.lng;
@@ -1242,6 +1260,9 @@ void AP_GPS::update_instance(uint8_t instance)
                             state[instance].velocity[1] = 0;
                             state[instance].velocity[2] = 0;
                         }
+                        break;
+                    case 4: //Passing through initial velocity
+                        state[instance].velocity = init_vel;
                         break;
                     default: //Holding position
                         state[instance].velocity[axis] = 0;

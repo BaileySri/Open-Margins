@@ -25,7 +25,7 @@ static struct {
     uint32_t last_warn_time;    // system time of last warning in milliseconds.  Used to throttle text warnings sent to GCS
 } ekf_check_state;
 
-// ekf_check - detects if ekf variance are out of tolerance and triggers failsafe
+// ekf_check - detects if tolerance and triggers failsafe
 // should be called at 10hz
 void Copter::ekf_check()
 {
