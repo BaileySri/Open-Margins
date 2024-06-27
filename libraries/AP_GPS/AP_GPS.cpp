@@ -14,6 +14,7 @@
  */
 #include "AP_GPS_config.h"
 #include "AP_Math/vector3.h"
+#include "SensorConfirmation/sensor_confirmation_structs.h"
 
 #if AP_GPS_ENABLED
 
@@ -536,6 +537,15 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Increment: 1
     // @User: Advanced
     AP_GROUPINFO("_PDLK_CHAN", 42, AP_GPS, CHANNEL, 0),
+
+    // @Param: PDLK_ROLL_LIM
+    // @DisplayName: How far the roll is allowed to go
+    // @Description: When attacking with ADV_ATK = 2, will bounce back and forth between this limit
+    // @Units: m/s
+    // @Range: INT8_MIN INT8_MAX
+    // @Increment: 1
+    // @User: Advanced
+    AP_GROUPINFO("_PDLK_ROL_LIM", 43, AP_GPS, ROLL_LIMIT, 0),    
 
     AP_GROUPEND
 };
@@ -1080,7 +1090,7 @@ void AP_GPS::update_instance(uint8_t instance)
         //  Fencing
         static bool fenced = false;
         static bool atk_started = false;
-        static Location fence = { };
+        static Location init_lla = { };
         // Take Over Attack Variables
         static uint32_t mode[2] = {0, 0}; //0:Slow, 1:Offset, 2:Slow, 3:Hold
         static uint32_t init_atk[2] = {0, 0}; //The number of updates to move the drones speed to 0
@@ -1104,7 +1114,7 @@ void AP_GPS::update_instance(uint8_t instance)
         // Set attack values
         if(!atk_started && attack){
             //As the attack is enabled
-            fence = state[instance].location;
+            init_lla = state[instance].location;
             last_vel = state[instance].velocity; //Dynamic Attack only considers positive North and East attack values
             init_vel = last_vel;
             last_lla = state[instance].location;
@@ -1119,9 +1129,12 @@ void AP_GPS::update_instance(uint8_t instance)
             } else if(ADV_ATK == 1){
                 mode[0] = 1;
                 mode[1] = 1;
+            } else if(ADV_ATK == 2){
+                mode[0] = 5;
+                mode[1] = 5;
             }
             #if CONFIG_HAL_BOARD == HAL_BOARD_SITL
-            GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat, lng, alt): %i, %i, %i", fence.lat, fence.lng, fence.alt);
+            GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat, lng, alt): %i, %i, %i", init_lla.lat, init_lla.lng, init_lla.alt);
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Beginning in mode %i.", mode[0]);
             #elif CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
             GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat,lng, alt): %li, %li, %li", fence.lat, fence.lng, fence.alt);
@@ -1194,11 +1207,14 @@ void AP_GPS::update_instance(uint8_t instance)
                                                                                         0.89831f); //Scaling factor
                     break;
                 case 3: //One-Step Spoofing
-                    state[instance].location.lat = fence.lat + static_cast<int32_t>(ATK_OFS[0] * 0.89831f); //Scaling factor
+                    state[instance].location.lat = init_lla.lat + static_cast<int32_t>(ATK_OFS[0] * 0.89831f); //Scaling factor
                     break;
                 case 4: //Replaying recorded velocity
                     state[instance].location.lat = last_lla.lat + static_cast<int32_t>(init_vel[0] * 100 * dt/1000.0F * // V[0]*t
                                                                                         0.89831f); //Scaling factor
+                    break;
+                case 5: // YoYo the Roll
+                    state[instance].location.lat = init_lla.lat;
                     break;
                 default: //Holding position
                     state[instance].location.lat = last_lla.lat;
@@ -1206,6 +1222,7 @@ void AP_GPS::update_instance(uint8_t instance)
             last_lla.lat = state[instance].location.lat;
             
             float lng_scale_factor = 1/((3.14/180) * 6378.137 * cos(atan(0.99664719F* tan(last_lla.lat/10000000.0F))) / 100);
+            const float roll = degrees(AP_AHRS::get_singleton()->get_roll());
 
             //Longitude Spoofing
             switch(mode[1]){
@@ -1225,11 +1242,28 @@ void AP_GPS::update_instance(uint8_t instance)
                                                                                         lng_scale_factor); //Scaling factor
                     break;
                 case 3: //One-Step Spoofing
-                    state[instance].location.lng = fence.lng + static_cast<int32_t>(ATK_OFS[1] * lng_scale_factor); //Scaling factor
+                    state[instance].location.lng = init_lla.lng + static_cast<int32_t>(ATK_OFS[1] * lng_scale_factor); //Scaling factor
                     break;
                 case 4: //Replaying recorded velocity
                     state[instance].location.lng = last_lla.lng + static_cast<int32_t>(init_vel[1] * 100 * dt/1000.0F * //V[i-1]*t
                                                                                         lng_scale_factor); //Scaling factor
+                    break;
+                case 5: //Offset until we hit the roll limit
+                    if(abs(roll) < ROLL_LIMIT){
+                        state[instance].location.lng = init_lla.lng + ATK_OFS_EAST;
+                    } else{
+                        mode[1] = 6;
+                        take_over[1] = 0;
+                        state[instance].location.lng = init_lla.lng;
+                    }
+                    break;
+                case 6: //Offset until roll returns to 0
+                    if(abs(roll) < 1){ //Within 1 degree of 0
+                        mode[1] = 5;
+                        state[instance].location.lng = init_lla.lng + ATK_OFS_EAST;
+                    } else{
+                        state[instance].location.lng = init_lla.lng - (take_over[1] * ATK_OFS_EAST);
+                    }
                     break;
                 default: //Holding position
                     state[instance].location.lng = last_lla.lng;
@@ -1263,6 +1297,11 @@ void AP_GPS::update_instance(uint8_t instance)
                         break;
                     case 4: //Passing through initial velocity
                         state[instance].velocity = init_vel;
+                        break;
+                    case 5:
+                        state[instance].velocity[0] = 0;
+                        state[instance].velocity[1] = (last_lla.lng - state[instance].location.lng) * lng_scale_factor / (dt / 1000.0F);
+                        state[instance].velocity[2] = 0;
                         break;
                     default: //Holding position
                         state[instance].velocity[axis] = 0;

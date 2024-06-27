@@ -674,6 +674,8 @@ protected:
     AP_Int8 SIMPLE_ATTACK;
     // What channel to use
     AP_Int8 CHANNEL;
+    // How far the roll is allowed to go
+    AP_Float ROLL_LIMIT;
     
     enum DriverOptions : int16_t {
         UBX_MBUseUart2    = (1U << 0U),
