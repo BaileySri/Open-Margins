@@ -1,4 +1,5 @@
 #include "AP_HAL/system.h"
+#include "GCS_MAVLink/GCS.h"
 #include "AP_Logger/AP_Logger.h"
 #include <SensorConfirmation/sensor_confirmation.h>
 
@@ -184,7 +185,11 @@ bool SensorConfirmation::run() {
 }
 
 void SensorConfirmation::alert() {
-  gcs().send_text(MAV_SEVERITY_WARNING, "ALERT");
+  #if CONFIG_HAL_BOARD == HAL_BOARD_SITL
+    gcs().send_text(MAV_SEVERITY_WARNING,"ALERT");
+  #elif CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
+    gcs().send_text(MAV_SEVERITY_WARNING,"ALERT");
+  #endif
 }
 
 void SensorConfirmation::log() {

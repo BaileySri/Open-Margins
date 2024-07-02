@@ -9,6 +9,7 @@
 #include "../AP_Math/AP_Math.h"
 #include "../AP_OpticalFlow/AP_OpticalFlow.h"
 #include "../AP_RangeFinder/AP_RangeFinder.h"
+#include "../AP_GPS/AP_GPS.h"
 #include "AP_Math/matrix3.h"
 #include <cstdint>
 

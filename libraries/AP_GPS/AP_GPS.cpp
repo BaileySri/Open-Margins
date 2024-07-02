@@ -1137,7 +1137,7 @@ void AP_GPS::update_instance(uint8_t instance)
             GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat, lng, alt): %i, %i, %i", init_lla.lat, init_lla.lng, init_lla.alt);
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Beginning in mode %i.", mode[0]);
             #elif CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
-            GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat,lng, alt): %li, %li, %li", fence.lat, fence.lng, fence.alt);
+            GCS_SEND_TEXT(MAV_SEVERITY_INFO,"FENCE INIT(lat,lng, alt): %li, %li, %li", init_lla.lat, init_lla.lng, init_lla.alt);
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Beginning in mode 0, reducing velocity to 0.");
             #endif
         }
