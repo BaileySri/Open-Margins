@@ -291,8 +291,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.hover()
     
     #PADLOCK
-    # Fly a rectangle shaped mission where the GPS is spoofed part way
     def attack_gps(self, timeout=360):
+        '''Fly a rectangle shaped mission where the GPS is spoofed part way'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -350,9 +350,9 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # Fly a rectangle mission where the optical flow is spoofed part way.
-    # This is done by flying in AUTO then disabling GPS and enabling OF in EKF
+    # flying in AUTO then disabling GPS and enabling OF in EKF
     def attack_of(self, timeout=360):
+        '''Fly a rectangle mission where the optical flow is spoofed part way.'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -414,8 +414,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # Fly a rectangle shaped mission where the Barometer is spoofed part way
     def attack_bar(self, timeout=360):
+        '''Fly a rectangle shaped mission where the Barometer is spoofed part way'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -480,8 +480,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # Fly a rectangle shaped mission where the Rangefinder is spoofed part way
     def attack_rf(self, timeout=360):
+        '''Fly a rectangle shaped mission where the Rangefinder is spoofed part way'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -491,11 +491,30 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters
-        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0.0487) #Field data
-        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
+        self.set_parameter("SIM_PDLK_GPS", 0)#0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 0)#14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0)#0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0)#0.0121) #Field data
         self.set_parameter("PDLK_CHOI_CI", 0)
+        # Disable as much noise as possible
+        self.set_parameters({
+            SIM_ACC1_RND   :  0.0,
+            SIM_ACC2_RND   :  0.0,
+            SIM_ACC3_RND   :  0.0,
+            SIM_ARSPD2_RND :  0.0,
+            SIM_ARSPD_RND  :  0.0,
+            SIM_BAR2_RND   :  0.0,
+            SIM_BAR3_RND   :  0.0,
+            SIM_BARO_RND   :  0.0,
+            SIM_FLOW_RND   :  0.0,
+            SIM_GYR1_RND   :  0.0,
+            SIM_GYR2_RND   :  0.0,
+            SIM_GYR3_RND   :  0.0,
+            SIM_MAG_RND    :  0.0,
+            SIM_SONAR_RND  :  0.0,
+            SIM_GPS_NOISE  :  0.0,
+            SIM_GPS2_NOISE :  0.0,
+        })
         
         #Set Optical Flow
         self.set_parameter("SIM_FLOW_ENABLE", 1)
@@ -544,8 +563,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # Fly a rectangle shaped mission where the Accelerometer is spoofed part way
     def attack_acc(self, timeout=360):
+        '''Fly a rectangle shaped mission where the Accelerometer is spoofed part way'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -609,8 +628,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # Fly a rectangle shaped mission where the Gyroscope is spoofed part way
     def attack_gyr(self, timeout=360):
+        '''Fly a rectangle shaped mission where the Gyroscope is spoofed part way'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -674,8 +693,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.progress("Auto mission completed: passed!")
 
     #PADLOCK
-    # Fly a rectangle shaped mission where the Magnetometer is spoofed part way
     def attack_mag(self, timeout=360):
+        '''Fly a rectangle shaped mission where the Magnetometer is spoofed part way'''
         # Fly mission the data gathering mission
         self.progress("# Load PDLK Attack Waypoints")
         # load the waypoint count
@@ -738,6 +757,46 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         
         # Because of how far the UAV moves it won't disarm before the end of the test
         # and will flag as failed but the data file will be placed in the buildlogs folder
+        self.progress("Auto mission completed: passed!")
+
+    #PADLOCK
+    def survey_grid(self, timeout=360):
+        '''Fly a survey grid'''
+        # Fly mission the data gathering mission
+        self.progress("# Load PDLK Waypoints")
+        # load the waypoint count
+        num_wp = self.load_mission("surveygrid.txt")
+        if not num_wp:
+            raise NotAchievedException("load surveygrid.txt failed")
+        
+        self.progress("Setting sensor parameters")        
+        # Set sensor parameters
+        self.set_parameter("SIM_PDLK_GPS", 0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0.0121) #Field data
+        self.set_parameter("PDLK_CHOI_CI", 0)
+        
+        #Set Optical Flow
+        self.set_parameter("SIM_FLOW_ENABLE", 1)
+        self.set_parameter("FLOW_TYPE", 10)
+        self.set_analog_rangefinder_parameters()
+        self.reboot_sitl()
+
+        #Enable Sensor Confirmation for CNF Logging
+        self.set_parameter("PDLK_SNSR_CONF", 1)
+        # Set flight speed, cm/s
+        self.set_parameter("WPNAV_SPEED", 1000)
+
+        self.progress("test: Fly a mission from 1 to %u" % num_wp)
+        self.takeoff(20)
+
+        # switch into AUTO mode
+        self.change_mode("AUTO")
+
+        # wait for disarm
+        self.wait_disarmed(timeout = 360)
+        self.progress("Landed and Disarmed")
         self.progress("Auto mission completed: passed!")
         
     def RecordThenPlayMission(self, side=50, timeout=300):
@@ -10611,6 +10670,7 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
              self.attack_mag,
              self.attack_of,
              self.attack_rf,
+             self.survey_grid,
         ])
         return ret
 
