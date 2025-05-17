@@ -299,7 +299,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Description: Enable/Disable the GPS Sensor Attack
     // @Values: 0:Disable, 1:Enable
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ATK", 32, AP_GPS, GPS_ATK, 0),
+    AP_GROUPINFO("_PDLK_ATK", 34, AP_GPS, GPS_ATK, 0),
 
     // @Param: PDLK_N
     // @DisplayName: North/South spoofed value
@@ -308,7 +308,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: ITN32_MIN INT32_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_N", 33, AP_GPS, ATK_OFS_NORTH, 0),
+    AP_GROUPINFO("_PDLK_N", 35, AP_GPS, ATK_OFS_NORTH, 0),
 
     // @Param: PDLK_E
     // @DisplayName: East/West spoofed value
@@ -317,14 +317,14 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT32_MIN INT32_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_E", 34, AP_GPS, ATK_OFS_EAST, 0),
+    AP_GROUPINFO("_PDLK_E", 36, AP_GPS, ATK_OFS_EAST, 0),
     
     // @Param: GPS_FEN
     // @DisplayName: Disable/Enable the fence around GPS Spoofing
     // @Description: Turns on or off the fencing around gps spoofing for safety.
     // @Values: 0:Disabled, 1:Enabled
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_FEN", 35, AP_GPS, GPS_FENCE, 0),
+    AP_GROUPINFO("_PDLK_FEN", 37, AP_GPS, GPS_FENCE, 0),
 
     // @Param: PDLK_FEN_SIZ
     // @DisplayName: Box size of GPS Fence
@@ -333,7 +333,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_FEN_SIZ", 36, AP_GPS, GPS_FENCE_SIZE, 5),
+    AP_GROUPINFO("_PDLK_FEN_SIZ", 38, AP_GPS, GPS_FENCE_SIZE, 5),
 
     // @Param: PDLK_FEN_ALT
     // @DisplayName: Fence height above and below
@@ -342,7 +342,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_FEN_ALT", 37, AP_GPS, GPS_FENCE_ALT, 5),
+    AP_GROUPINFO("_PDLK_FEN_ALT", 39, AP_GPS, GPS_FENCE_ALT, 5),
 
     // @Param: PDLK_FAIL
     // @DisplayName: The number of frames allowed to fail
@@ -352,14 +352,14 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Values: -1: Always Attack, 0: Never Attack, Int: 1/INT frames will be attacked
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_FAIL", 38, AP_GPS, FAILED_FRAMES, -1),
+    AP_GROUPINFO("_PDLK_FAIL", 40, AP_GPS, FAILED_FRAMES, -1),
 
     // @Param: PDLK_ADV_ATK
     // @DisplayName: GPS Advanced Sensor Attack
     // @Description: Enable/Disable the advanced attacker mode of sensor spoofing, requires PDLK_ATK == 1
     // @Values: 0:Disable, 1:Route Redirection
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ADV_ATK", 39, AP_GPS, ADV_ATK, 0),
+    AP_GROUPINFO("_PDLK_ADV_ATK", 41, AP_GPS, ADV_ATK, 0),
 
     // @Param: PDLK_SLW_RAT
     // @DisplayName: Rate of which the GPS is slowed
@@ -368,7 +368,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_SLW_RAT", 40, AP_GPS, SLOW_RATE, 1),
+    AP_GROUPINFO("_PDLK_SLW_RAT", 42, AP_GPS, SLOW_RATE, 1),
 
     // @Param: PDLK_ONE_ATK
     // @DisplayName: One-Step attack switch
@@ -377,7 +377,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ONE_ATK", 41, AP_GPS, SIMPLE_ATTACK, 0),
+    AP_GROUPINFO("_PDLK_ONE_ATK", 43, AP_GPS, SIMPLE_ATTACK, 0),
 
     // @Param: PDLK_CHAN
     // @DisplayName: Decides which channel to enable the attack on
@@ -386,7 +386,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_CHAN", 42, AP_GPS, CHANNEL, 0),
+    AP_GROUPINFO("_PDLK_CHAN", 44, AP_GPS, CHANNEL, 0),
 
     // @Param: PDLK_ROLL_LIM
     // @DisplayName: How far the roll is allowed to go
@@ -395,7 +395,7 @@ const AP_Param::GroupInfo AP_GPS::var_info[] = {
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ROL_LIM", 43, AP_GPS, ROLL_LIMIT, 0),    
+    AP_GROUPINFO("_PDLK_ROL_LIM", 45, AP_GPS, ROLL_LIMIT, 0),    
 
     AP_GROUPEND
 };

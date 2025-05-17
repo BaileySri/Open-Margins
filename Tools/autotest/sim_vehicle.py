@@ -870,13 +870,16 @@ def start_mavproxy(opts, stuff):
     else:
         cmd.append("mavproxy.py")
 
-    if opts.valgrind:
-        cmd.extend(['--retries', '10'])
-    else:
-        cmd.extend(['--retries', '5'])
+    #PADLOCK
+    # local MAVProxy doesn't recognize --retries as an option
+    # Simulator launches fine so disabling retries as a stopgap for now
+    #if opts.valgrind:
+    #    cmd.extend(['--retries', '10'])
+    #else:
+    #    cmd.extend(['--retries', '5'])
 
-    if opts.mcast:
-        cmd.extend(["--master", "mcast:"])
+    #if opts.mcast:
+    #    cmd.extend(["--master", "mcast:"])
 
     # returns a valid IP of the host windows computer if we're WSL2.
     # This is run before the loop so it only runs once
