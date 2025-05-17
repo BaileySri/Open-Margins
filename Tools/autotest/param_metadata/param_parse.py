@@ -7,7 +7,6 @@
 
 '''
 
-from __future__ import print_function
 import copy
 import os
 import re
@@ -30,7 +29,7 @@ parser.add_argument("--no-emit",
                     dest='emit_params',
                     action='store_false',
                     default=True,
-                    help="don't emit parameter documention, just validate")
+                    help="don't emit parameter documentation, just validate")
 parser.add_argument("--format",
                     dest='output_format',
                     action='store',
@@ -220,6 +219,10 @@ def process_vehicle(vehicle):
                 setattr(p, field[0], field[1])
             else:
                 error("param: unknown parameter metadata field '%s'" % field[0])
+
+        if (getattr(p, 'Values', None) is not None and
+                getattr(p, 'Bitmask', None) is not None):
+            error("Both @Values and @Bitmask present")
 
         vehicle.params.append(p)
     current_file = None
@@ -440,7 +443,7 @@ def clean_param(param):
         for i in valueList:
             (start, sep, end) = i.partition(":")
             if sep != ":":
-                raise ValueError("Expected a colon seperator in (%s)" % (i,))
+                raise ValueError("Expected a colon separator in (%s)" % (i,))
             if len(end) == 0:
                 raise ValueError("Expected a colon-separated string, got (%s)" % i)
             end = end.strip()

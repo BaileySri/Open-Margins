@@ -13,6 +13,10 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AP_RangeFinder_config.h"
+
+#if AP_RANGEFINDER_ENABLED
+
 #include <AP_Common/AP_Common.h>
 #include <AP_HAL/AP_HAL.h>
 #include "AP_HAL/system.h"
@@ -118,9 +122,9 @@ void AP_RangeFinder_Backend::update_status(RangeFinder::RangeFinder_State &state
     }
 
     // check distance
-    if (state_arg.distance_m > max_distance_cm() * 0.01f) {
+    if (state_arg.distance_m > max_distance()) {
         set_status(state_arg, RangeFinder::Status::OutOfRangeHigh);
-    } else if (state_arg.distance_m < min_distance_cm() * 0.01f) {
+    } else if (state_arg.distance_m < min_distance()) {
         set_status(state_arg, RangeFinder::Status::OutOfRangeLow);
     } else {
         set_status(state_arg, RangeFinder::Status::Good);
@@ -151,3 +155,4 @@ void AP_RangeFinder_Backend::get_state(RangeFinder::RangeFinder_State &state_arg
 }
 #endif
 
+#endif  // AP_RANGEFINDER_ENABLED

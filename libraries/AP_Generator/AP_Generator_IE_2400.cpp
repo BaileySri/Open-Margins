@@ -13,6 +13,8 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma GCC optimize("Os")
+
 #include "AP_Generator_IE_2400.h"
 
 #if AP_GENERATOR_IE_2400_ENABLED
@@ -451,6 +453,18 @@ bool AP_Generator_IE_2400::check_for_warning_code(char* msg_txt, uint8_t msg_len
     return true;
 }
 
+// Check if we should notify on any change of fuel cell state
+void AP_Generator_IE_2400::check_status(const uint32_t now)
+{
+    if (ErrorCode(_err_code) == ErrorCode::REDUCED_POWER) {
+        if (now - _last_low_power_warning_ms > 5000) {
+            gcs().send_text(MAV_SEVERITY_INFO, "Fuel cell: reduced power; conditioning needed?");
+            _last_low_power_warning_ms = now;
+        }
+    }
+    return AP_Generator_IE_FuelCell::check_status(now);
+}
+
 #if HAL_LOGGING_ENABLED
 // log generator status to the onboard log
 void AP_Generator_IE_2400::log_write()
@@ -561,5 +575,19 @@ void AP_Generator_IE_2400::update_state_msg()
         }
     }
 }
+
+#if HAL_GCS_ENABLED
+// Get the MAV_SEVERITY level of a given error code
+MAV_SEVERITY AP_Generator_IE_2400::get_mav_severity(uint32_t err_code) const
+{
+    if (err_code <= 9) {
+        return MAV_SEVERITY_INFO;
+    }
+    if (err_code <= 20) {
+        return MAV_SEVERITY_WARNING;
+    }
+    return MAV_SEVERITY_CRITICAL;
+}
+#endif // HAL_GCS_ENABLED
 
 #endif  // AP_GENERATOR_IE_2400_ENABLED

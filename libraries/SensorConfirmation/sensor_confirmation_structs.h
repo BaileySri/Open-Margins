@@ -54,7 +54,7 @@ struct Accel {
     uint32_t newTimestamp = frontend->get_last_update_usec(); // us
 
     if ((newTimestamp - Timestamp) > 0) {
-      uint8_t primary_accel = frontend->get_primary_accel();
+      uint8_t primary_accel = frontend->get_first_usable_accel();
       Raw = frontend->get_accel_raw(primary_accel);
       rot = AP_AHRS::get_singleton()->get_DCM_rotation_body_to_ned();
       NED newReading = (rot * frontend->get_accel(primary_accel)) + GRAVITY_NED;
@@ -107,7 +107,7 @@ struct Gyro {
     uint32_t newTimestamp = frontend->get_last_update_usec(); // us
 
     if ((newTimestamp - Timestamp) > 0) {
-      uint8_t primary_gyro = frontend->get_primary_gyro();
+      uint8_t primary_gyro = frontend->get_first_usable_gyro();
       Raw = frontend->get_gyro_raw(primary_gyro);
       Readings = frontend->get_gyro(primary_gyro);
       Error += GYRO_ERR * sqrtf(frontend->get_gyro_rate_hz(primary_gyro));
@@ -235,7 +235,7 @@ struct RF {
 
     if ((newTimestamp - Timestamp) > 0) {
       const uint16_t &newReading =
-          RangeFinder::get_singleton()->distance_cm_orient(ROTATION_PITCH_270);
+          RangeFinder::get_singleton()->distance_orient(ROTATION_PITCH_270) * 100;
       // Assuming we want to use tilt compensation on rangefinder
       rf_raw = newReading;
       rf_filt.apply(rf_raw, 0.05f);
@@ -261,7 +261,7 @@ struct RF {
 };
 
 struct OF {
-  LowPassFilterVector2f flow_filter; // LowPassFilter for flowrate
+  LowPassFilterConstDtVector2f flow_filter; // LowPassFilter for flowrate
   Vector2f FlowRate; // rad/s, this is the angular rate calculated by the
                      // camera, i.e., HereFlow
   Vector2f
@@ -333,7 +333,7 @@ struct OF {
 
   OF &operator=(const OF &rhs) {
     flow_filter.reset(rhs.flow_filter.get());
-    flow_filter.set_cutoff_frequency(rhs.flow_filter.get_cutoff_freq());
+    flow_filter.set_cutoff_frequency(400, rhs.flow_filter.get_cutoff_freq());
     FlowRate = rhs.FlowRate;
     BodyRate = rhs.BodyRate;
     Timestamp = rhs.Timestamp;

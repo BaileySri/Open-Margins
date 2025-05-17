@@ -585,7 +585,7 @@ void __wrap__free_r(void *rptr, void *ptr)
     return free(ptr);
 }
 
-#ifdef USE_POSIX
+#if HAL_USE_FATFS
 /*
   allocation functions for FATFS
  */
@@ -615,7 +615,7 @@ void ff_memfree(void* mblock)
 {
     free(mblock);
 }
-#endif // USE_POSIX
+#endif // HAL_USE_FATFS
 
 /*
   return true if a memory region is safe for a DMA operation
@@ -635,7 +635,7 @@ bool mem_is_dma_safe(const void *addr, uint32_t size, bool filesystem_op)
         // use bouncebuffer for all non FS ops on H7
         return false;
     }
-    if (((uint32_t)addr) & 0x1F) {
+    if ((((uint32_t)addr) & 0x1F) != 0 || (size & 0x1F) != 0) {
         return false;
     }
     if (filesystem_op) {

@@ -359,6 +359,7 @@ void AP_Motors6DOF::output_armed_stabilizing()
         }
     }
 
+#if AP_BATTERY_ENABLED
     const AP_BattMonitor &battery = AP::battery();
 
 	// Current limiting
@@ -384,6 +385,7 @@ void AP_Motors6DOF::output_armed_stabilizing()
         batt_current_ratio = predicted_current_ratio;
     }
     _output_limited += (_dt / (_dt + _batt_current_time_constant)) * (1 - batt_current_ratio);
+#endif
 
     _output_limited = constrain_float(_output_limited, 0.0f, 1.0f);
 
@@ -522,6 +524,8 @@ void AP_Motors6DOF::output_armed_stabilizing_vectored_6dof()
         throttle_thrust = _throttle_thrust_max;
         limit.throttle_upper = true;
     }
+
+    throttle_thrust = constrain_float(throttle_thrust, -1.0f, _max_throttle);
 
     // calculate roll, pitch and Throttle for each motor (only used by vertical thrusters)
     rpt_max = 1; //Initialized to 1 so that normalization will only occur if value is saturated

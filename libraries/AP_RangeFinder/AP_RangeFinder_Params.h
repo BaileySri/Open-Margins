@@ -1,5 +1,9 @@
 #pragma once
 
+#include "AP_RangeFinder_config.h"
+
+#if AP_RANGEFINDER_ENABLED
+
 #include <AP_Param/AP_Param.h>
 #include <AP_Math/AP_Math.h>
 
@@ -8,6 +12,7 @@ public:
     static const struct AP_Param::GroupInfo var_info[];
 
     AP_RangeFinder_Params(void);
+    void convert_min_max_params();
 
     /* Do not allow copies */
     CLASS_NO_COPY(AP_RangeFinder_Params);
@@ -16,14 +21,14 @@ public:
     AP_Float scaling;
     AP_Float offset;
     AP_Int16 powersave_range;
-    AP_Int16 min_distance_cm;
-    AP_Int16 max_distance_cm;
+    AP_Float min_distance;
+    AP_Float max_distance;
     AP_Int8  type;
     AP_Int8  pin;
     AP_Int8  ratiometric;
     AP_Int8  stop_pin;
     AP_Int8  function;
-    AP_Int8  ground_clearance_cm;
+    AP_Float ground_clearance;
     AP_Int8  address;
     AP_Int8  orientation;
     //PADLOCK
@@ -34,3 +39,5 @@ public:
     AP_Int8 SIMPLE_ATTACK; //1:Enable, Other:Disable
     AP_Int8 CHANNEL; //Channel to activate attack for
 };
+
+#endif  // AP_RANGEFINDER_ENABLED
