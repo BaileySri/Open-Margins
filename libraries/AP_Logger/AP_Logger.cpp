@@ -1169,6 +1169,53 @@ void AP_Logger::Write_ACO(const Vector2f &P_OF, const Vector2f &P_OF_Err,
     FOR_EACH_BACKEND(WriteBlock(&pkt2, sizeof(pkt2)));
 }
 
+
+
+void AP_Logger::Write_PosVelKG(const float &VelN, const float &VelE, const float &VelD,
+                               const float &PosN, const float &PosE, const float &PosD,
+                               const int &obsIndex)
+{
+
+    enum LogMessages msg_header;
+    switch (obsIndex)
+    {
+    case 0:
+        msg_header = LOG_KG_1_MSG;
+        break;
+    case 1:
+        msg_header = LOG_KG_2_MSG;
+        break;
+    case 2:
+        msg_header = LOG_KG_3_MSG;
+        break;
+    case 3:
+        msg_header = LOG_KG_4_MSG;
+        break;
+    case 4:
+        msg_header = LOG_KG_5_MSG;
+        break;
+    case 5:
+        msg_header = LOG_KG_6_MSG;
+        break;
+    default:
+        return;
+    };
+
+    uint32_t timestamp = AP_HAL::micros64();
+    struct log_KG_1 pkt1 = {
+        LOG_PACKET_HEADER_INIT(msg_header),
+        time_us : timestamp,
+        VelN : VelN,
+        VelE : VelE,
+        VelD : VelD,
+        PosN : PosN,
+        PosE : PosE,
+        PosD : PosD,
+    };
+
+    FOR_EACH_BACKEND(WriteBlock(&pkt1, sizeof(pkt1)));
+}
+
 // output a FMT message for each backend if not already done so
 void AP_Logger::Safe_Write_Emit_FMT(log_write_fmt *f)
 {

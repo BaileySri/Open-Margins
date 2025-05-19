@@ -750,6 +750,18 @@ struct PACKED log_accof_2{
   float C_ACC_Down;
   float C_ACC_Err;
 };
+
+struct PACKED log_KG_1{
+  LOG_PACKET_HEADER
+  uint64_t time_us;
+  float VelN;
+  float VelE;
+  float VelD;
+  float PosN;
+  float PosE;
+  float PosD;
+};
+
 struct PACKED log_File {
     LOG_PACKET_HEADER;
     char filename[16];
@@ -1428,6 +1440,18 @@ LOG_STRUCTURE_FROM_VISUALODOM \
       "ACO1", "Qffffffff", "TimeUS,COFN,COFE,CNe,CEe,POFN,POFE,PNe,PEe", "snnnnnnnn", "F00000000"}, \
     { LOG_ACCOF_2_MSG, sizeof(log_accof_2), \
       "ACO2", "Qffff", "TimeUS,CAN,CAE,CAD,CAe", "snnnn", "F0000"}, \
+    { LOG_KG_1_MSG, sizeof(log_KG_1), \
+      "EKF1", "Qffffff", "TimeUS,VelN,VelE,VelD,PosN,PosE,PosD", "s------", "F000000"}, \
+    { LOG_KG_2_MSG, sizeof(log_KG_1), \
+      "EKF2", "Qffffff", "TimeUS,VelN,VelE,VelD,PosN,PosE,PosD", "s------", "F000000"}, \
+    { LOG_KG_3_MSG, sizeof(log_KG_1), \
+      "EKF3", "Qffffff", "TimeUS,VelN,VelE,VelD,PosN,PosE,PosD", "s------", "F000000"}, \
+    { LOG_KG_4_MSG, sizeof(log_KG_1), \
+      "EKF4", "Qffffff", "TimeUS,VelN,VelE,VelD,PosN,PosE,PosD", "s------", "F000000"}, \
+    { LOG_KG_5_MSG, sizeof(log_KG_1), \
+      "EKF5", "Qffffff", "TimeUS,VelN,VelE,VelD,PosN,PosE,PosD", "s------", "F000000"}, \
+    { LOG_KG_6_MSG, sizeof(log_KG_1), \
+      "EKF6", "Qffffff", "TimeUS,VelN,VelE,VelD,PosN,PosE,PosD", "s------", "F000000"}, \
     { LOG_FILE_MSG, sizeof(log_File), \
       "FILE",   "NIBZ",       "FileName,Offset,Length,Data", "----", "----" }, \
 LOG_STRUCTURE_FROM_AIS \
@@ -1526,6 +1550,12 @@ enum LogMessages : uint8_t {
     LOG_CNFR_4_MSG,
     LOG_ACCOF_1_MSG,
     LOG_ACCOF_2_MSG,
+    LOG_KG_1_MSG,
+    LOG_KG_2_MSG,
+    LOG_KG_3_MSG,
+    LOG_KG_4_MSG,
+    LOG_KG_5_MSG,
+    LOG_KG_6_MSG,
     LOG_FILE_MSG,
     LOG_SCRIPTING_MSG,
     LOG_VIDEO_STABILISATION_MSG,

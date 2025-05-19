@@ -4,6 +4,9 @@
 #include "AP_NavEKF3_core.h"
 #include <GCS_MAVLink/GCS.h>
 #include <AP_DAL/AP_DAL.h>
+//PADLOCK
+// for Write_KalmanGain
+#include <AP_Logger/AP_Logger.h>
 
 /********************************************************
 *                   RESET FUNCTIONS                     *
@@ -1118,6 +1121,9 @@ void NavEKF3_core::FuseVelPosNED()
                     // force the covariance matrix to be symmetrical and limit the variances to prevent ill-conditioning.
                     ForceSymmetry();
                     ConstrainVariances();
+                    AP_Logger::get_singleton()->Write_PosVelKG(Kfusion[4], Kfusion[5], Kfusion[6],
+                                                               Kfusion[7], Kfusion[8], Kfusion[9],
+                                                               obsIndex);
 
                     // update states and renormalise the quaternions
                     for (uint8_t i = 0; i<=stateIndexLim; i++) {

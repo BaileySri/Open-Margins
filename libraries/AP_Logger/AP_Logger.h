@@ -304,6 +304,12 @@ public:
     void Write_ACO(const Vector2f &P_OF, const Vector2f &P_OF_Err,
                     const Vector2f &C_OF, const Vector2f &C_OF_Err,
                     const Vector3f &C_ACC, const float C_ACC_Err);
+    typedef ftype Matrix24[24][24];
+    typedef ftype Vector6[6];
+    typedef ftype Vector28[28];
+    void Write_PosVelKG(const float &VelN, const float &VelE, const float &VelD,
+                        const float &PosN, const float &PosE, const float &PosD,
+                        const int &obsIndex);
 
     void Write(const char *name, const char *labels, const char *fmt, ...);
     void Write(const char *name, const char *labels, const char *units, const char *mults, const char *fmt, ...);
