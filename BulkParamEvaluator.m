@@ -1,4 +1,4 @@
-function [res] = BulkParamEvaluator(param, weight, variance, attack, window)
+function [res] = BulkParamEvaluator(param, weight, variance, attack, window, attackWindow)
 %BULKPARAMEVALUATOR Calculate TPR points as a parameter changes
 %   Calculates TPR as a specific parameter is changed. Others are constant
     %Constant
@@ -13,10 +13,10 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window)
         res = zeros(iterations, 1);
         for idx = 1:iterations
             %Calculate threshold needed
-            [xben, disben] = HeuristicGraphs(variance, weight(idx), 0, window);
-            t = ThresholdFinder(xben, disben, fpr, dx);
+            [xben, disben] = HeuristicGraphs(variance, weight(idx), 0, window, attackWindow);
+            t = ThresholdFinder(xben, disben, fpr, dx)
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight(idx), attack, window);
+            [~, dis] = HeuristicGraphs(variance, weight(idx), attack, window, attackWindow);
             res(idx) = TPR(dis, t, dx);
             disp(idx + "/" + iterations)
         end
@@ -28,10 +28,10 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window)
         res = zeros(iterations, 1);
         for idx = 1:iterations
             %Calculate threshold needed
-            [xben, disben] = HeuristicGraphs(variance(idx), weight, 0, window);
+            [xben, disben] = HeuristicGraphs(variance(idx), weight, 0, window, attackWindow);
             t = ThresholdFinder(xben, disben, fpr, dx);
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance(idx), weight, attack, window);
+            [~, dis] = HeuristicGraphs(variance(idx), weight, attack, window, attackWindow);
             res(idx) = TPR(dis, t, dx);
             disp(idx + "/" + iterations)
         end
@@ -42,7 +42,7 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window)
         iterations = max(size(attack));
         res = zeros(iterations, 1);
         %Calculate threshold needed for
-        [xben, disben] = HeuristicGraphs(variance, weight, 0, window);
+        [xben, disben] = HeuristicGraphs(variance, weight, 0, window, attackWindow);
         t = ThresholdFinder(xben, disben, fpr, dx);
         for idx = 1:iterations
             %Calculate TPR corresponding to attack value at t threshold
@@ -58,10 +58,25 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window)
         res = zeros(iterations, 1);
         for idx = 1:iterations
             %Calculate threshold needed
-            [xben, disben] = HeuristicGraphs(variance, weight, 0, window(idx));
+            [xben, disben] = HeuristicGraphs(variance, weight, 0, window(idx), attackWindow);
             t = ThresholdFinder(xben, disben, fpr, dx);
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight, attack, window(idx));
+            [~, dis] = HeuristicGraphs(variance, weight, attack, window(idx), attackWindow);
+            res(idx) = TPR(dis, t, dx);
+            disp(idx + "/" + iterations)
+        end
+    elseif strcmp(param, "attackWindow")
+        if ~isequal(size(weight), size(attack), size(variance), size(window))
+            error("Other parameters must be constants")
+        end
+        iterations = max(size(attackWindow));
+        res = zeros(iterations, 1);
+        for idx = 1:iterations
+            %Calculate threshold needed
+            [xben, disben] = HeuristicGraphs(variance, weight, 0, window, attackWindow(idx));
+            t = ThresholdFinder(xben, disben, fpr, dx);
+            %Calculate TPR corresponding to attack value at t threshold
+            [~, dis] = HeuristicGraphs(variance, weight, attack, window, attackWindow(idx));
             res(idx) = TPR(dis, t, dx);
             disp(idx + "/" + iterations)
         end

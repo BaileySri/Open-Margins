@@ -1,11 +1,11 @@
 
-function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window)
+function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, attackWindow)
     %Mean and Variance for the ith distribution, i = 1...k
-    means = zeros(window, 1);
-    variances = zeros(window, 1);
+    means = zeros(attackWindow, 1);
+    variances = zeros(attackWindow, 1);
 
     %Mean is dependent only on attack and weight term
-    for i = 1:window
+    for i = 1:attackWindow
         innersum = 0;
         for j = 1:i
             innersum = innersum + (-1)^(i+j)*nchoosek(i, j-1)*weight^(i-j);
@@ -14,7 +14,7 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window)
     end
 
     %Variance is dependent on error and weight term
-    for i = 1:window
+    for i = 1:attackWindow
         outersum = 0;
         for j = 1:i-1
             innersum = 0;
@@ -51,8 +51,10 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window)
         term1 = pdf("ncx2", x, 1, means(1)/variances(1));
     end
 
+    % Everything gets stored back in term1, so it just gets reused from
+    % here forward
     convx = x;
-    for i = 2:window
+    for i = 2:attackWindow
         % Weighed Attack
         if isequal(means(i), 0)
             term2 = pdf("gamma", x, 1/2, 2*variances(i));
@@ -86,6 +88,42 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window)
                 dx: ...
                 x(newidx(1, 2)) + x(newidx(2,2)) - 2*dx;
     end
+
+    % Convolution of benign terms if there are any
+    if ~isequal(attackWindow, window)
+        Nminusk = window - attackWindow;
+
+        % Benign term
+        term2 = pdf("chi2", x, Nminusk);
+
+        %%%%%%%%%%%%%%%%%%%
+        % This introduces some rounding error but speeds up the process
+        % For final results remove this rounding step
+        originalsize = [1 length(term1); 1 length(term2)];
+        newidx = originalsize;
+        %
+        term1 = round(term1, 5);
+        term1 = term1(find(term1, 1, 'first'):end);
+        newidx(1, 1) = originalsize(1, 2) - length(term1) + 1;
+        term1 = term1(1:find(term1, 1, 'last'));
+        newidx(1, 2) = newidx(1, 1) + length(term1);
+        %
+        term2 = round(term2, 5);
+        term2 = term2(find(term2, 1, 'first'):end);
+        newidx(2, 1) = originalsize(2, 2) - length(term2) + 1;
+        term2 = term2(1:find(term2, 1, 'last'));
+        newidx(2, 2) = newidx(2, 1) + length(term2);
+        %%%%%%%%%%%%%%%%%%%%
+        
+        convPDF = conv(term1, term2);
+        term1 = convPDF/trapz(dx, convPDF);
+        %%% The indexes on convx will need to be changed after removing
+        %%% rounding
+        convx = x(newidx(1, 1)) + x(newidx(2, 1)): ...
+                dx: ...
+                x(newidx(1, 2)) + x(newidx(2,2)) - 2*dx;
+    end
+   
     %Normalize before returning
     term1 = term1/trapz(dx, term1);
     retX = convx;

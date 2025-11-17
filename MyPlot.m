@@ -1,5 +1,5 @@
 function retPlot = MyPlot(x, y)
-    %NOTE: Export using export_fig("FileName.pdf", "-transparent")
+    %NOTE: Export using export_fig("FileName", "-pdf", "-png", "-transparent")
     if ~isequal(size(x, 1), size(y, 1))
         print("Incompatible Dimensions")
         return
