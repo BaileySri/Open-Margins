@@ -344,8 +344,8 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
             raise e
 
 	    # Adjust the below parameter to change attack strength in autotest
-        self.set_parameter("GPS_PDLK_E", -250) #cm
-        self.set_parameter("GPS_PDLK_SLW_RAT", 0.1) #m/s
+        self.set_parameter("GPS_PDLK_E", 250) #cm
+        self.set_parameter("GPS_PDLK_SLW_RAT", 0.05) #m/s
         self.set_parameter("GPS_PDLK_ATK", 1) #bool
 
         # Allow the attack time to deviate the QuadCopters path
@@ -507,22 +507,22 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.set_parameter("PDLK_CHOI_CI", 0)
         # Disable as much noise as possible
         self.set_parameters({
-            SIM_ACC1_RND   :  0.0,
-            SIM_ACC2_RND   :  0.0,
-            SIM_ACC3_RND   :  0.0,
-            SIM_ARSPD2_RND :  0.0,
-            SIM_ARSPD_RND  :  0.0,
-            SIM_BAR2_RND   :  0.0,
-            SIM_BAR3_RND   :  0.0,
-            SIM_BARO_RND   :  0.0,
-            SIM_FLOW_RND   :  0.0,
-            SIM_GYR1_RND   :  0.0,
-            SIM_GYR2_RND   :  0.0,
-            SIM_GYR3_RND   :  0.0,
-            SIM_MAG_RND    :  0.0,
-            SIM_SONAR_RND  :  0.0,
-            SIM_GPS_NOISE  :  0.0,
-            SIM_GPS2_NOISE :  0.0,
+            "SIM_ACC1_RND"   :  0.0,
+            "SIM_ACC2_RND"   :  0.0,
+            "SIM_ACC3_RND"   :  0.0,
+            "SIM_ARSPD2_RND" :  0.0,
+            "SIM_ARSPD_RND"  :  0.0,
+            "SIM_BAR2_RND"   :  0.0,
+            "SIM_BAR3_RND"   :  0.0,
+            "SIM_BARO_RND"   :  0.0,
+            "SIM_FLOW_RND"   :  0.0,
+            "SIM_GYR1_RND"   :  0.0,
+            "SIM_GYR2_RND"   :  0.0,
+            "SIM_GYR3_RND"   :  0.0,
+            "SIM_MAG_RND"    :  0.0,
+            "SIM_SONAR_RND"  :  0.0,
+            "SIM_GPS_ACC"  :  0.0,
+            "SIM_GPS2_ACC" :  0.0,
         })
         
         #Set Optical Flow
@@ -561,6 +561,84 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
 
         # Allow the attack time to deviate the QuadCopters path
         self.delay_sim_time(60) #seconds
+        self.set_rc(7, 1200)
+        self.change_mode("LAND")
+        # wait for disarm
+        self.wait_disarmed()
+        self.progress("Landed and Disarmed")
+        
+        # Because of how far the UAV moves it won't disarm before the end of the test
+        # and will flag as failed but the data file will be placed in the buildlogs folder
+        self.progress("Auto mission completed: passed!")
+
+    def attack_rf_idle(self, timeout=360):
+        '''Fly a mission where the UAV hovers and the Rangefinder is spoofed part way'''
+
+        self.progress("Setting sensor parameters")        
+        # Set sensor parameters
+        self.set_parameter("SIM_PDLK_GPS", 0)#0.583) #meters
+        self.set_parameter("SIM_PDLK_GPS_SPD", 0)#14) #mm/s
+        self.set_parameter("SIM_PDLK_ACC", 0)#0.0487) #Field data
+        self.set_parameter("SIM_PDLK_GYRO", 0)#0.0121) #Field data
+        self.set_parameter("PDLK_CHOI_CI", 0)
+
+        # Disable as much noise as possible
+        self.set_parameters({
+            "SIM_ACC1_RND"   :  0.0,
+            "SIM_ACC2_RND"   :  0.0,
+            "SIM_ACC3_RND"   :  0.0,
+            "SIM_ARSPD2_RND" :  0.0,
+            "SIM_ARSPD_RND"  :  0.0,
+            "SIM_BAR2_RND"   :  0.0,
+            "SIM_BAR3_RND"   :  0.0,
+            "SIM_BARO_RND"   :  0.0,
+            "SIM_FLOW_RND"   :  0.0,
+            "SIM_GYR1_RND"   :  0.0,
+            "SIM_GYR2_RND"   :  0.0,
+            "SIM_GYR3_RND"   :  0.0,
+            "SIM_MAG_RND"    :  0.0,
+            "SIM_SONAR_RND"  :  0.0,
+            "SIM_GPS1_ACC"   :  0.0, # This is just reported acc
+            "SIM_GPS2_ACC"   :  0.0,
+            "SIM_PDLK_GPS"   :  0.0, # This is the actual GPS error
+            "SIM_GPS1_VERR_X":  0.0, # This is the actual velocity error
+            "SIM_GPS1_VERR_Y":  0.0,
+            "SIM_GPS1_VERR_Z":  0.0,
+            "SIM_GPS2_VERR_X":  0.0,
+            "SIM_GPS2_VERR_Y":  0.0,
+            "SIM_GPS2_VERR_Z":  0.0,
+        })
+        
+        #Set Optical Flow
+        self.set_parameter("SIM_FLOW_ENABLE", 1)
+        self.set_parameter("FLOW_TYPE", 10)
+        self.set_analog_rangefinder_parameters()
+        self.reboot_sitl()
+
+        #Enable Sensor Confirmation for Logging
+        self.set_parameter("PDLK_SNSR_CONF", 1)
+        self.takeoff(mode='GUIDED')
+        self.change_mode("LOITER")
+        self.progress("test: Waiting 10 seconds in Loiter")
+        self.delay_sim_time(10)
+
+        # IMPORTANT: ArduPilot doesn't have a rangefinder noise parameter
+        # The noise used by the EKF is built into EKF parameters
+        # Default is 0.5m with a minimum noise of 0.1
+	    # Adjust the below parameter to change attack strength in autotest
+        self.set_parameter("RNGFND1_PDLK_ONE", 2) # Set to constant offset
+        self.set_parameter("RNGFND1_PDLK_DIS", -1000) # 500cm closer to the ground
+        self.set_parameter("RNGFND1_PDLK_CHN", 7) # Channel 7 enables and disables spoofing
+        ## EKF check operates at 10Hz, should likely make the attack half strength
+        #  so the EKF checks only see the offset at each update instead of 2*offset
+        self.set_parameter("RNGFND1_PDLK_RAT", 0.75) # Offset per update in meters, 20Hz sensor but logs at 10Hz
+        self.set_parameter("EK3_SRC1_POSZ", 2) # Use rangefinder for Z position
+        # Enable attack
+        self.set_rc(7, 1700)
+
+        # Allow the attack time to deviate the QuadCopters path
+        self.progress("test: Attack started, waiting 10 seconds.")
+        self.delay_sim_time(10) #seconds
         self.set_rc(7, 1200)
         self.change_mode("LAND")
         # wait for disarm
@@ -12544,6 +12622,7 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
              self.attack_mag,
              self.attack_of,
              self.attack_rf,
+             self.attack_rf_idle,
              self.survey_grid,
         ])
         return ret

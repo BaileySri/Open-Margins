@@ -76,10 +76,12 @@ void AP_RangeFinder_Backend::update_status(RangeFinder::RangeFinder_State &state
     static float time_elapsed = 0; //s
     bool attack = params.CHANNEL > 0 ? (RC_Channels::rc_channel(params.CHANNEL - 1)->get_radio_in() > 1600) || (params.ATK == 1) : (params.ATK == 1);
     static float t1 = 0; //s
+    static float last_attack = 0;
 
     state.real_distance_m = state.distance_m; //m
     if( !atk_started && attack ) {
         rf_init = state.distance_m;
+        last_attack = rf_init;
         atk_started = true;
         time = AP_HAL::micros64()/1.0E6;
         if( fabs(params.RATE) < 0.0001 ){
@@ -97,6 +99,11 @@ void AP_RangeFinder_Backend::update_status(RangeFinder::RangeFinder_State &state
                 gcs().send_text(MAV_SEVERITY_INFO, "RF: One-Step Offset %.2f m", params.DIST/1E2);
                 final_msg = true;
             }
+        } else if(params.SIMPLE_ATTACK == 2){
+            // Never stop offsetting at a constant rate
+            const int sign = sgn(params.DIST.get());
+            state.distance_m = last_attack + params.RATE * sign;
+            last_attack = state.distance_m;
         } else{
             time_elapsed += ((AP_HAL::micros64()/1.0E6) - time);
             const int sign = sgn(params.DIST.get());

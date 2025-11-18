@@ -142,14 +142,14 @@ const AP_Param::GroupInfo AP_RangeFinder_Params::var_info[] = {
     //PADLOCK
 
     // @Param: PDLK_RAT
-    // @DisplayName: Rate of which the RF is offset every update
-    // @Description: When performing a basic attack the drone will be offset by PDLK_RAT cm every update
-    // @Units: cm
+    // @DisplayName: Acceleration of attack
+    // @Description: When attack is not a one-step attack this parameter is perceived acceleration
+    // @Units: m/s^2
     // @Range: FLOAT_MIN FLOAT_MAX
     // @Increment: 1
     // @User: Advanced
     AP_GROUPINFO("PDLK_RAT", 54, AP_RangeFinder_Params, RATE, 1),
-    // @Param: PDLK_RAT
+    // @Param: PDLK_DIS
     // @DisplayName: Distance offset from initial reading
     // @Description: Distance the drone is offset
     // @Units: cm
@@ -157,7 +157,7 @@ const AP_Param::GroupInfo AP_RangeFinder_Params::var_info[] = {
     // @Increment: 1
     // @User: Advanced
     AP_GROUPINFO("PDLK_DIS", 55, AP_RangeFinder_Params, DIST, 0),
-    // @Param: PDLK_RAT
+    // @Param: PDLK_ATK
     // @DisplayName: Enables or disables the rangefinder spoofing
     // @Description: 1:Enable Attack, Other:Disable
     // @Units: Enable/Disable
