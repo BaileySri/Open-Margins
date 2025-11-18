@@ -335,10 +335,10 @@ private:
     AP_Int8                            _filter_range;  // valid value range from mean value
     AP_Int32                           _baro_probe_ext;
 
-    //PADLOCK
-    AP_Int8 PDLK_ATK;
-    AP_Float PDLK_PRES;
-    AP_Float PDLK_TEMP;
+    //XXXX
+    AP_Int8 XXXX_ATK;
+    AP_Float XXXX_PRES;
+    AP_Float XXXX_TEMP;
     AP_Int8 CHANNEL;
 
 #ifndef HAL_BUILD_AP_PERIPH

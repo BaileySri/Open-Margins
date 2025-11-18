@@ -953,7 +953,7 @@ void AP_Logger::Write_NamedValueFloat(const char *name, float value)
         );
 }
 
-//PADLOCK
+//XXXX
 //Logging function
 void AP_Logger::Write_SNSR( const Accel &ACO_cAccel, const OF &ACO_cOF, 
                             const Accel &CNF_cAccel,

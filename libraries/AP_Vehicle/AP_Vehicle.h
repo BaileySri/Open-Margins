@@ -83,7 +83,7 @@
 #include <AP_IBus_Telem/AP_IBus_Telem.h>
 
 class AP_DDS_Client;
-//PADLOCK
+//XXXX
 // Sensor confirmation library
 #include <SensorConfirmation/sensor_confirmation.h>
 
@@ -301,8 +301,8 @@ public:
     // Returns roll and  pitch for OSD Horizon, Plane overrides to correct for VTOL view and fixed wing PTCH_TRIM_DEG
     virtual void get_osd_roll_pitch_rad(float &roll, float &pitch) const;
 
-    //PADLOCK
-    SensorConfirmation PDLK;
+    //XXXX
+    SensorConfirmation XXXX;
     /*
      get the target earth-frame angular velocities in rad/s (Z-axis component used by some gimbals)
      */

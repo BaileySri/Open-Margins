@@ -933,9 +933,9 @@ void Copter::read_AHRS(void)
         //@@INVARIANT check
         copter_invariants_check(pos_control->get_pos_target_NEU_cm().x,  inertial_nav.get_position_neu_cm().x); 
     }
-    //PADLOCK
+    //XXXX
     if(g.confirmation == 1){
-        AP_Vehicle::get_singleton()->PDLK.confirmation();
+        AP_Vehicle::get_singleton()->XXXX.confirmation();
     }
 }
 

@@ -139,42 +139,42 @@ const AP_Param::GroupInfo AP_RangeFinder_Params::var_info[] = {
     AP_GROUPINFO("ORIENT", 53, AP_RangeFinder_Params, orientation, AP_RANGEFINDER_DEFAULT_ORIENTATION),
 
 
-    //PADLOCK
+    //XXXX
 
-    // @Param: PDLK_RAT
+    // @Param: XXXX_RAT
     // @DisplayName: Acceleration of attack
     // @Description: When attack is not a one-step attack this parameter is perceived acceleration
     // @Units: m/s^2
     // @Range: FLOAT_MIN FLOAT_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("PDLK_RAT", 54, AP_RangeFinder_Params, RATE, 1),
-    // @Param: PDLK_DIS
+    AP_GROUPINFO("XXXX_RAT", 54, AP_RangeFinder_Params, RATE, 1),
+    // @Param: XXXX_DIS
     // @DisplayName: Distance offset from initial reading
     // @Description: Distance the drone is offset
     // @Units: cm
     // @Range: INT16_MIN INT16_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("PDLK_DIS", 55, AP_RangeFinder_Params, DIST, 0),
-    // @Param: PDLK_ATK
+    AP_GROUPINFO("XXXX_DIS", 55, AP_RangeFinder_Params, DIST, 0),
+    // @Param: XXXX_ATK
     // @DisplayName: Enables or disables the rangefinder spoofing
     // @Description: 1:Enable Attack, Other:Disable
     // @Units: Enable/Disable
     // @User: Advanced
-    AP_GROUPINFO("PDLK_ATK", 56, AP_RangeFinder_Params, ATK, 0),
-    // @Param: PDLK_ONE
+    AP_GROUPINFO("XXXX_ATK", 56, AP_RangeFinder_Params, ATK, 0),
+    // @Param: XXXX_ONE
     // @DisplayName: Enables or disables the simple rangefinder spoofing
     // @Description: 1:Enable, Other:Disable
     // @Units: Enable/Disable
     // @User: Advanced
-    AP_GROUPINFO("PDLK_ONE", 57, AP_RangeFinder_Params, SIMPLE_ATTACK, 0),
-    // @Param: PDLK_CHN
+    AP_GROUPINFO("XXXX_ONE", 57, AP_RangeFinder_Params, SIMPLE_ATTACK, 0),
+    // @Param: XXXX_CHN
     // @DisplayName: Select what channel to activate the attack on
     // @Description: All valid RC Channels
     // @Units: All valid RC Channels
     // @User: Advanced
-    AP_GROUPINFO("PDLK_CHN", 58, AP_RangeFinder_Params, CHANNEL, 0),
+    AP_GROUPINFO("XXXX_CHN", 58, AP_RangeFinder_Params, CHANNEL, 0),
 
     AP_GROUPEND
 };

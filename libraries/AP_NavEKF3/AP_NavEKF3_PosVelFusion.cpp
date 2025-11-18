@@ -4,7 +4,7 @@
 #include "AP_NavEKF3_core.h"
 #include <GCS_MAVLink/GCS.h>
 #include <AP_DAL/AP_DAL.h>
-//PADLOCK
+//XXXX
 // for Write_KalmanGain
 #include <AP_Logger/AP_Logger.h>
 

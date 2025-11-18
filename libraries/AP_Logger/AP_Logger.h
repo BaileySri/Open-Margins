@@ -18,7 +18,7 @@
 
 #include "LoggerMessageWriter.h"
 
-//PADLOCK
+//XXXX
 #include "../../SensorConfirmation/sensor_confirmation_structs.h"
 
 class AP_Logger_Backend;
@@ -288,7 +288,7 @@ public:
                           const class RallyLocation &rally_point);
     void Write_SRTL(bool active, uint16_t num_points, uint16_t max_points, uint8_t action, const Vector3f& point);
     void Write_Winch(bool healthy, bool thread_end, bool moving, bool clutch, uint8_t mode, float desired_length, float length, float desired_rate, uint16_t tension, float voltage, int8_t temp);
-    //PADLOCK
+    //XXXX
     //Log write function
     void Write_SNSR(const Accel &ACO_cAccel, const OF &ACO_cOF, 
                     const Accel &CNF_cAccel,

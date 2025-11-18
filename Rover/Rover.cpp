@@ -309,7 +309,7 @@ void Rover::ahrs_update()
     // update position
     have_position = ahrs.get_location(current_loc);
 
-    PDLK.confirmation();
+    XXXX.confirmation();
 
     // set home from EKF if necessary and possible
     if (!ahrs.home_is_set()) {

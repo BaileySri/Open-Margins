@@ -151,7 +151,7 @@ public:
     const Vector3f &get_field(uint8_t i) const { return _get_state(Priority(i)).field; }
     const Vector3f &get_field(void) const { return get_field(_first_usable); }
 
-    //PADLOCK
+    //XXXX
     // Getter method for instantaneous reading
     const Vector3f &get_reading(uint8_t i) const { return _get_state(Priority(i)).reading; }
     const Vector3f &get_reading(void) const { return get_reading(_first_usable); }
@@ -366,7 +366,7 @@ public:
     // get the first compass marked for use by COMPASSx_USE
     uint8_t get_first_usable(void) const { return _first_usable; }
 
-    //PADLOCK
+    //XXXX
     // Attack parameters
     AP_Int8 ATK;
     AP_Float ATK_VAL[3];
@@ -577,7 +577,7 @@ private:
         // corrected magnetic field strength
         Vector3f    field;
 
-        //PADLOCK
+        //XXXX
         // Raw reading, not averaged
         Vector3f    reading;
 

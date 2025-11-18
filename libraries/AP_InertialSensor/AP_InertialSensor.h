@@ -133,12 +133,12 @@ public:
     const Vector3f     &get_accel(uint8_t i) const { return _accel[i]; }
     const Vector3f     &get_accel(void) const { return get_accel(_first_usable_accel); }
 
-    //PADLOCK
+    //XXXX
     // Get pre-spoofed raw accelerometer values (Scaled and Rotated into BF)
     const Vector3f     &get_accel_raw(uint8_t i) const { return _accel_raw[i]; }
     const Vector3f     &get_accel_raw(void) const { return get_accel_raw(_first_usable_accel); }
 
-    //PADLOCK
+    //XXXX
     // Get pre-spoofed raw gyro values (Scaled and Rotated into BF)
     const Vector3f     &get_gyro_raw(uint8_t i) const { return gyro_raw[i]; }
     const Vector3f     &get_gyro_raw(void) const { return get_gyro_raw(_first_usable_gyro); }
@@ -491,7 +491,7 @@ public:
     } harmonic_notches[HAL_INS_NUM_HARMONIC_NOTCH_FILTERS];
 #endif  // AP_INERTIALSENSOR_HARMONICNOTCH_ENABLED
 
-    //PADLOCK
+    //XXXX
     AP_Int8 INS_ATK;
     int AXIS_EFFECT = 0;
     AP_Int16 ACC_ATK_VAL[3];
@@ -541,7 +541,7 @@ private:
     // Most recent accelerometer reading
     Vector3f _accel[INS_MAX_INSTANCES];
 
-    //PADLOCK
+    //XXXX
     // Raw readings before spoofing for logging
     Vector3f _accel_raw[INS_MAX_INSTANCES];
     Vector3f gyro_raw[INS_MAX_INSTANCES];

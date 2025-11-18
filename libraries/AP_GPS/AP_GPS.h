@@ -197,7 +197,7 @@ public:
         uint32_t time_week_ms;              ///< GPS time (milliseconds from start of GPS week)
         uint16_t time_week;                 ///< GPS week number
         Location location;                  ///< last fix location
-        //PADLOCK
+        //XXXX
         // Location unaltered by attack values
         Location real_loc = Location(-1, -1, -1, Location::AltFrame::ABOVE_HOME);
         // Velocity unaltered by attack values
@@ -335,7 +335,7 @@ public:
     const Location &location() const {
         return location(primary_instance);
     }
-    //PADLOCK
+    //XXXX
     // location of last unaltered fix
     const Location &real_loc(uint8_t instance) const {
         return state[instance].real_loc;
@@ -379,7 +379,7 @@ public:
     const Vector3f &velocity() const {
         return velocity(primary_instance);
     }
-    //PADLOCK
+    //XXXX
     // Unaltered 3D Velocity in NED format
     const Vector3f &real_vel(uint8_t instance) const {
         return state[instance].real_vel;
@@ -408,7 +408,7 @@ public:
     float ground_course() const {
         return ground_course(primary_instance);
     }
-    //PADLOCK
+    //XXXX
     // Unaltered ground course
     float real_ground_course(uint8_t instance) const {
         return state[instance].real_gc;
@@ -654,7 +654,7 @@ protected:
 
     uint32_t _log_gps_bit = -1;
 
-    //PADLOCK
+    //XXXX
     //GPS Parameters
     // Boolean to enable attack
     AP_Int8 GPS_ATK;

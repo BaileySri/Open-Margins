@@ -7,7 +7,7 @@
 #include "AP_InertialSensor_Backend.h"
 #include <AP_Logger/AP_Logger.h>
 #include <AP_BoardConfig/AP_BoardConfig.h>
-//PADLOCK
+//XXXX
 #include <RC_Channel/RC_Channel.h>
 #if AP_MODULE_SUPPORTED
 #include <AP_Module/AP_Module.h>
@@ -281,7 +281,7 @@ void AP_InertialSensor_Backend::apply_gyro_filters(const uint8_t instance, const
 }
 
 
-//PADLOCK
+//XXXX
 // Added rand_normal from SIM_Aircraft.cpp
 /*
   normal distribution random numbers
@@ -312,7 +312,7 @@ static double rand_normal(double mean, double stddev)
     }
 }
 
-//PADLOCK
+//XXXX
 // Dropped the constant keyword from gyro to allow spoofing in-place
 void AP_InertialSensor_Backend::_notify_new_gyro_raw_sample(uint8_t instance,
                                                             Vector3f &gyro,
@@ -355,7 +355,7 @@ void AP_InertialSensor_Backend::_notify_new_gyro_raw_sample(uint8_t instance,
     AP_Module::call_hook_gyro_sample(instance, dt, gyro);
 #endif
 
-    //PADLOCK
+    //XXXX
     // Saving the raw gyro value for logging, do not confuse with _gyro_raw
     _imu.gyro_raw[instance] = gyro;
     // Gyroscope spoofing code is here
@@ -620,7 +620,7 @@ void AP_InertialSensor_Backend::_publish_accel(uint8_t instance, const Vector3f 
 }
 
 
-//PADLOCK
+//XXXX
 // I removed the constant keyword from &accel to overwrite the data
 // locally and propagate the results to the rest of the system
 void AP_InertialSensor_Backend::_notify_new_accel_raw_sample(uint8_t instance,
@@ -665,7 +665,7 @@ void AP_InertialSensor_Backend::_notify_new_accel_raw_sample(uint8_t instance,
     AP_Module::call_hook_accel_sample(instance, dt, accel, fsync_set);
 #endif
   
-    //PADLOCK
+    //XXXX
     // Saving the raw accelerometer value
     _imu._accel_raw[instance] = accel;
     // Accelerometer spoofing code is here

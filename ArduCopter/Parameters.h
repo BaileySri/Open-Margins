@@ -385,7 +385,7 @@ public:
         k_param_throw_altitude_descend,
         k_param_throw_altitude_ascend,
 
-        //PADLOCK
+        //XXXX
         //Parameter Identities
         k_param_choi_ci,
         k_param_choi_attack,
@@ -395,7 +395,7 @@ public:
         // 511: reserved
     };
 
-    //PADLOCK 
+    //XXXX 
     //Defined parameters
     AP_Int8         choi_ci;
     AP_Int8         choi_attack;

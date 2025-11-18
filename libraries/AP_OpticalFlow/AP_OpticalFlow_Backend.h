@@ -27,7 +27,7 @@ class OpticalFlow_backend
     friend class AP_OpticalFlow;
 
 public:
-    AP_OpticalFlow::OpticalFlow_state pdlkState;
+    AP_OpticalFlow::OpticalFlow_state XXXXState;
 
     // constructor
     OpticalFlow_backend(AP_OpticalFlow &_frontend);
@@ -68,9 +68,9 @@ protected:
     // get ADDR parameter value
     uint8_t get_address(void) const { return frontend._address; }
 
-    //PADLOCK
-    float get_flow_x(void) const { return frontend._pdlk_attack_x;}
-    float get_flow_y(void) const { return frontend._pdlk_attack_y;}
+    //XXXX
+    float get_flow_x(void) const { return frontend._XXXX_attack_x;}
+    float get_flow_y(void) const { return frontend._XXXX_attack_y;}
     
     // semaphore for access to shared frontend data
     HAL_Semaphore _sem;

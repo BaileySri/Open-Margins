@@ -215,7 +215,7 @@
  # define FS_EKF_THRESHOLD_DEFAULT      0.8f    // EKF failsafe's default compass and velocity variance threshold above which the EKF failsafe will be triggered
 #endif
 
-//PADLOCK
+//XXXX
 #ifndef SNSR_CONF_DEFAULT
   #define SNSR_CONF_DEFAULT   0
 #endif

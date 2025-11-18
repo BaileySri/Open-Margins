@@ -55,7 +55,7 @@ public:
     float distance() const { return state.distance_m; }
     float real_distance() const { return state.real_distance_m; }
     uint16_t distance_cm() const { 
-            //PADLOCK
+            //XXXX
             // Adding this guard here because the attack code
             // can cause a floating point exception on startup
             if (state.distance_m >= (INT16_MAX/1E2)){

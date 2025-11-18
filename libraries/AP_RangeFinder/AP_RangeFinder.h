@@ -212,7 +212,7 @@ public:
     struct RangeFinder_State {
         float distance_m;               // distance in meters
         int8_t signal_quality_pct;      // measurement quality in percent 0-100, -1 -> quality is unknown
-        //PADLOCK
+        //XXXX
         float real_distance_m;          // real distance in meters during spoofing
         uint16_t voltage_mv;            // voltage in millivolts, if applicable, otherwise 0
         enum RangeFinder::Status status; // sensor status

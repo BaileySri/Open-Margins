@@ -870,7 +870,7 @@ def start_mavproxy(opts, stuff):
     else:
         cmd.append("mavproxy.py")
 
-    #PADLOCK
+    #XXXX
     # local MAVProxy doesn't recognize --retries as an option
     # Simulator launches fine so disabling retries as a stopgap for now
     #if opts.valgrind:

@@ -664,28 +664,28 @@ const AP_Param::Info Copter::var_info[] = {
     GSCALAR(throw_altitude_ascend, "THROW_ALT_ACSND", 3.0),
 #endif
 
-    //PADLOCK
+    //XXXX
     //var_info declarations
-    // @Param: PDLK_CHOI_CI
+    // @Param: XXXX_CHOI_CI
     // @DisplayName: Control Invariant monitor by Choi et al
     // @Description: Enables or Disables the Control Invariant monitor as defined by Choi et al
     // @Values: 0: Disabled, 1:Enabled
     // @User: Advanced
-    GSCALAR(choi_ci, "PDLK_CHOI_CI", CTRL_INV_DEFAULT),
+    GSCALAR(choi_ci, "XXXX_CHOI_CI", CTRL_INV_DEFAULT),
 
-    // @Param: PDLK_CHOI_ATK
+    // @Param: XXXX_CHOI_ATK
     // @DisplayName: Sensor Attacks by Choi et al
     // @Description: Enables or Disables an attack defined by Choi et al
     // @Values: 0: Disabled, 1:Roll Sensor Attack, 2:Actuator Attack (Roll)
     // @User: Advanced
-    GSCALAR(choi_attack, "PDLK_CHOI_ATK", CHOI_ATK_DEFAULT),
+    GSCALAR(choi_attack, "XXXX_CHOI_ATK", CHOI_ATK_DEFAULT),
 
-    // @Param: PDLK_SNSR_CONF
+    // @Param: XXXX_SNSR_CONF
     // @DisplayName: Sensor Confirmation 
     // @Description: Enables or Disables the Sensor Confirmation
     // @Values: 0: Disabled, 1:Enabled
     // @User: Advanced
-    GSCALAR(confirmation, "PDLK_SNSR_CONF", SNSR_CONF_DEFAULT),
+    GSCALAR(confirmation, "XXXX_SNSR_CONF", SNSR_CONF_DEFAULT),
 
 #if OSD_ENABLED || OSD_PARAM_ENABLED
     // @Group: OSD

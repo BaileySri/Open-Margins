@@ -720,7 +720,7 @@ float RangeFinder::distance_orient(enum Rotation orientation) const
     }
 
     float dist = backend->distance();
-    //PADLOCK
+    //XXXX
     // I have to add this bit to avoid potentially crashing the system
     // on boot because of the attack code
     if(dist >= (INT16_MAX/1E2)){

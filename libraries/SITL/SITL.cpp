@@ -732,13 +732,13 @@ const AP_Param::GroupInfo SIM::var_gps[] = {
     AP_SUBGROUPINFO(gps[3], "GPS4_", 53, SIM, GPSParms),
 #endif
 
-    //PADLOCK
+    //XXXX
     // This isn't where I'd put the acc/gyro params but
     // there isn't space in the user param tables 1 2 or 3
-    AP_GROUPINFO("PDLK_GPS", 54, SIM, pdlk_gps_noise, 2.5), //meters, NEO-M8N
-    AP_GROUPINFO("PDLK_GPS_SPD", 55, SIM, pdlk_gps_spd, 50), //mm/s, NEO-M8N
-    AP_GROUPINFO("PDLK_ACC", 56, SIM, pdlk_acc_noise, 0.02943), //m/s/s, LSM303D
-    AP_GROUPINFO("PDLK_GYRO", 57, SIM, pdlk_gyro_noise, 0.00384 ), //rad/s, L3GD20H
+    AP_GROUPINFO("XXXX_GPS", 54, SIM, XXXX_gps_noise, 2.5), //meters, NEO-M8N
+    AP_GROUPINFO("XXXX_GPS_SPD", 55, SIM, XXXX_gps_spd, 50), //mm/s, NEO-M8N
+    AP_GROUPINFO("XXXX_ACC", 56, SIM, XXXX_acc_noise, 0.02943), //m/s/s, LSM303D
+    AP_GROUPINFO("XXXX_GYRO", 57, SIM, XXXX_gyro_noise, 0.00384 ), //rad/s, L3GD20H
     AP_GROUPEND
 };
 #endif  // HAL_SIM_GPS_ENABLED

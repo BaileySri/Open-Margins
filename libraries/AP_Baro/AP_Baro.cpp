@@ -266,38 +266,38 @@ const AP_Param::GroupInfo AP_Baro::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO("1_THST_SCALE", 25, AP_Baro, sensors[0].mot_scale, 0),
 #endif  // AP_BARO_THST_COMP_ENABLED
-    //PADLOCK
-    // @Param: PDLK_ATK
+    //XXXX
+    // @Param: XXXX_ATK
     // @DisplayName: Barometer attack switch
     // @Description: Enable/Disable Pressure, Temperature, or Both spoofing.
     // @values: 0:Disabled, 1:Temperature, 2:Pressure, 3:Both
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ATK", 26, AP_Baro, PDLK_ATK, 0),
+    AP_GROUPINFO("_XXXX_ATK", 26, AP_Baro, XXXX_ATK, 0),
 
-    // @Param: PDLK_TMP
+    // @Param: XXXX_TMP
     // @DisplayName: Temperature to spoof on the barometer
     // @Description: Temperature value to replace in the barometer readings
     // @Units: Celsius
     // @Increment: MIN_FLOAT MAX_FLOAT
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_TMP", 27, AP_Baro, PDLK_TEMP, 0),
+    AP_GROUPINFO("_XXXX_TMP", 27, AP_Baro, XXXX_TEMP, 0),
 
-    // @Param: PDLK_PRES
+    // @Param: XXXX_PRES
     // @DisplayName: Pressure to spoof on the barometer
     // @Description: Pressure value to replace in the barometer readings
     // @Units: Pascal
     // @Increment: MIN_FLOAT MAX_FLOAT
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_PRES", 28, AP_Baro, PDLK_PRES, 0),
+    AP_GROUPINFO("_XXXX_PRES", 28, AP_Baro, XXXX_PRES, 0),
 
-    // @Param: PDLK_CHAN
+    // @Param: XXXX_CHAN
     // @DisplayName: Decides which channel to enable the attack on
     // @Description: The whole offset will happen in a single update.
     // @Units: 0:Disable, 1:Enable
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_CHAN", 29, AP_Baro, CHANNEL, 0),
+    AP_GROUPINFO("_XXXX_CHAN", 29, AP_Baro, CHANNEL, 0),
 
     AP_GROUPEND
 };

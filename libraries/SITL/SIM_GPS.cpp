@@ -417,7 +417,7 @@ void GPS::check_backend_allocation()
     allocated_type = configured_type;
 }
 
-//PADLOCK
+//XXXX
 // Added rand_normal from SIM_Aircraft.cpp
 /*
   normal distribution random numbers
@@ -519,12 +519,12 @@ void GPS::update()
     // add an altitude error controlled by a slow sine wave
     d.altitude = altitude + params.noise * sinf(now_ms * 0.0005f) + params.alt_offset;
 
-    //PADLOCK
+    //XXXX
     // Adding simulated error to Lat/Long values
     // Using the notion that CEP of n is 50%, n to 2n is 43.7%, and 2n to 3n is 6.1%
     static float prev_lat = d.latitude;
     static float prev_lon = d.longitude;
-    const float CEP = _sitl->pdlk_gps_noise;
+    const float CEP = _sitl->XXXX_gps_noise;
     double const earth_rad_inv = 1.569612305760477e-7; // use Authalic/Volumetric radius
     // Converting CEP to DRMS by dividing by sqrt(2)
     float noise_lat = rand_normal(0, CEP / sqrt(2));

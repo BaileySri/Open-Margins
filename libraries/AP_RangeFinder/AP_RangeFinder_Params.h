@@ -31,7 +31,7 @@ public:
     AP_Float ground_clearance;
     AP_Int8  address;
     AP_Int8  orientation;
-    //PADLOCK
+    //XXXX
     //Attack parameters
     AP_Float RATE; //m/s^2
     AP_Int16 DIST; //cm

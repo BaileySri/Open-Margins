@@ -684,12 +684,12 @@ const AP_Param::GroupInfo AP_InertialSensor::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO("_RAW_LOG_OPT", 56, AP_InertialSensor, raw_logging_options, 0),
 
-    // @Param: PDLK_ATK
+    // @Param: XXXX_ATK
     // @DisplayName: Switch for spoofing
     // @Description: Disables/Enables INS spoofing.
     // @User: Advanced
     // @Values: 0:Disabled, 1:Accelerometer, 2:Gyroscope, 3:Accelerometer and Gyroscope
-    AP_GROUPINFO("PDLK_ATK", 57, AP_InertialSensor, INS_ATK, 0),
+    AP_GROUPINFO("XXXX_ATK", 57, AP_InertialSensor, INS_ATK, 0),
     
     // @Param: AX_EFF
     // @DisplayName: Switch to treat non-spoofed axis differently
@@ -740,14 +740,14 @@ const AP_Param::GroupInfo AP_InertialSensor::var_info[] = {
     // @Units: c-rad/s
     AP_GROUPINFO("GYR_Y", 63, AP_InertialSensor, GYR_ATK_VAL[2], 0),
 
-    // @Param: PDLK_CHAN
+    // @Param: XXXX_CHAN
     // @DisplayName: Decides which channel to enable the attack on
     // @Description: The whole offset will happen in a single update.
     // @Units: 0:Disable, 1:Enable
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    // AP_GROUPINFO("PDLK_CHAN", 65, AP_InertialSensor, CHANNEL, 0),
+    // AP_GROUPINFO("XXXX_CHAN", 65, AP_InertialSensor, CHANNEL, 0),
 
     /*
       NOTE: parameter indexes have gaps above. When adding new

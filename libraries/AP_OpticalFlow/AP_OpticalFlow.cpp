@@ -98,45 +98,45 @@ const AP_Param::GroupInfo AP_OpticalFlow::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO_FRAME("_HGT_OVR", 6,  AP_OpticalFlow, _height_override,   0.0f, AP_PARAM_FRAME_ROVER),
 
-    //PADLOCK
-    // @Param: _PDLK_X
+    //XXXX
+    // @Param: _XXXX_X
     // @DisplayName: Replace rotation about x axis
     // @Description: Value to replace actual flow rate X reading with. Indicates right/left tilt and compensates for body rate.
     // @Units: rad/s
     // @Range: -3.14 3.14
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_X", 7,  AP_OpticalFlow, _pdlk_attack_x,   0),
+    AP_GROUPINFO("_XXXX_X", 7,  AP_OpticalFlow, _XXXX_attack_x,   0),
 
-    // @Param: _PDLK_Y
+    // @Param: _XXXX_Y
     // @DisplayName: Replace rotation about x axis
     // @Description: Value to replace actual flow rate X reading with. Indicates front/back tilt and compensates for body rate.
     // #Units: rad/s
     // @Range: -3.14 3.14
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_Y", 8,  AP_OpticalFlow, _pdlk_attack_y,   0),
+    AP_GROUPINFO("_XXXX_Y", 8,  AP_OpticalFlow, _XXXX_attack_y,   0),
 
-    // @Param: _PDLK_ENABLE
+    // @Param: _XXXX_ENABLE
     // @DisplayName: Enable OF spoofing
     // @Description: Enables or Disables optical flow spoofing.
     // @Values: 0:Disabled 1:Enabled Other:Disabled
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ATK", 9,  AP_OpticalFlow, _pdlk_attack_enable,   0),
+    AP_GROUPINFO("_XXXX_ATK", 9,  AP_OpticalFlow, _XXXX_attack_enable,   0),
 
-    // @Param: _PDLK_ADV
+    // @Param: _XXXX_ADV
     // @DisplayName: Enable Reactive Attacker for OF
     // @Description: Enable or Disable Reactive Attacker for OF.
     // @Values: 0:Disabled 1:Enabled Other:Disabled
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_ADV", 10,  AP_OpticalFlow, _pdlk_adv_atk,   0),
+    AP_GROUPINFO("_XXXX_ADV", 10,  AP_OpticalFlow, _XXXX_adv_atk,   0),
 
-    // @Param: PDLK_CHAN
+    // @Param: XXXX_CHAN
     // @DisplayName: Decides which channel to enable the attack on
     // @Description: The whole offset will happen in a single update.
     // @Units: 0:Disable, 1:Enable
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("_PDLK_CHAN", 11, AP_OpticalFlow, CHANNEL, 0),
+    AP_GROUPINFO("_XXXX_CHAN", 11, AP_OpticalFlow, CHANNEL, 0),
     
     AP_GROUPEND
 };

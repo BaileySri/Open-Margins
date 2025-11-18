@@ -304,11 +304,11 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
 
         self.progress("Setting sensor parameters")        
         # Set sensor parameters
-        self.set_parameter("SIM_PDLK_GPS", 0)#0.583) #meters
-        self.set_parameter("SIM_PDLK_GPS_SPD", 0)#14) #mm/s
-        self.set_parameter("SIM_PDLK_ACC", 0)#0.0487) #Field data
-        self.set_parameter("SIM_PDLK_GYRO", 0)#0.0121) #Field data
-        self.set_parameter("PDLK_CHOI_CI", 0)
+        self.set_parameter("SIM_XXXX_GPS", 0)#0.583) #meters
+        self.set_parameter("SIM_XXXX_GPS_SPD", 0)#14) #mm/s
+        self.set_parameter("SIM_XXXX_ACC", 0)#0.0487) #Field data
+        self.set_parameter("SIM_XXXX_GYRO", 0)#0.0121) #Field data
+        self.set_parameter("XXXX_CHOI_CI", 0)
 
         # Disable as much noise as possible
         self.set_parameters({
@@ -328,7 +328,7 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
             "SIM_SONAR_RND"  :  0.0,
             "SIM_GPS1_ACC"   :  0.0, # This is just reported acc
             "SIM_GPS2_ACC"   :  0.0,
-            "SIM_PDLK_GPS"   :  0.0, # This is the actual GPS error
+            "SIM_XXXX_GPS"   :  0.0, # This is the actual GPS error
             "SIM_GPS1_VERR_X":  0.0, # This is the actual velocity error
             "SIM_GPS1_VERR_Y":  0.0,
             "SIM_GPS1_VERR_Z":  0.0,
@@ -344,7 +344,7 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         self.reboot_sitl()
 
         #Enable Sensor Confirmation for Logging
-        self.set_parameter("PDLK_SNSR_CONF", 1)
+        self.set_parameter("XXXX_SNSR_CONF", 1)
         self.takeoff(mode='GUIDED')
         self.change_mode("LOITER")
         self.progress("test: Waiting 10 seconds in Loiter")
@@ -354,12 +354,12 @@ class AutoTestCopter(vehicle_test_suite.TestSuite):
         # The noise used by the EKF is built into EKF parameters
         # Default is 0.5m with a minimum noise of 0.1
 	    # Adjust the below parameter to change attack strength in autotest
-        self.set_parameter("RNGFND1_PDLK_ONE", 2) # Set to constant offset
-        self.set_parameter("RNGFND1_PDLK_DIS", -1000) # 500cm closer to the ground
-        self.set_parameter("RNGFND1_PDLK_CHN", 7) # Channel 7 enables and disables spoofing
+        self.set_parameter("RNGFND1_XXXX_ONE", 2) # Set to constant offset
+        self.set_parameter("RNGFND1_XXXX_DIS", -1000) # 500cm closer to the ground
+        self.set_parameter("RNGFND1_XXXX_CHN", 7) # Channel 7 enables and disables spoofing
         ## EKF check operates at 10Hz, should likely make the attack half strength
         #  so the EKF checks only see the offset at each update instead of 2*offset
-        self.set_parameter("RNGFND1_PDLK_RAT", 0.75) # Offset per update in meters, 20Hz sensor but logs at 10Hz
+        self.set_parameter("RNGFND1_XXXX_RAT", 0.75) # Offset per update in meters, 20Hz sensor but logs at 10Hz
         self.set_parameter("EK3_SRC1_POSZ", 2) # Use rangefinder for Z position
         # Enable attack
         self.set_rc(7, 1700)

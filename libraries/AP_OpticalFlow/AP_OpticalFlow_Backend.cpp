@@ -14,7 +14,7 @@
  */
 
 #include "AP_OpticalFlow.h"
-//PADLOCK
+//XXXX
 // Needed for advanced attacker
 #include <SensorConfirmation/sensor_confirmation.h>
 #include <AP_Vehicle/AP_Vehicle.h>
@@ -35,15 +35,15 @@ OpticalFlow_backend::~OpticalFlow_backend(void)
 // update the frontend
 void OpticalFlow_backend::_update_frontend(const struct AP_OpticalFlow::OpticalFlow_state &state)
 {
-    //PADLOCK
-    bool attack = frontend.CHANNEL > 0 ? (RC_Channels::rc_channel(frontend.CHANNEL - 1)->get_radio_in() > 1600) || frontend._pdlk_attack_enable == 1 : frontend._pdlk_attack_enable == 1;
+    //XXXX
+    bool attack = frontend.CHANNEL > 0 ? (RC_Channels::rc_channel(frontend.CHANNEL - 1)->get_radio_in() > 1600) || frontend._XXXX_attack_enable == 1 : frontend._XXXX_attack_enable == 1;
     if( attack ){
-        Vector2f attack_state{frontend._pdlk_attack_x + state.bodyRate.x,
-                        frontend._pdlk_attack_y + state.bodyRate.y};
-        pdlkState = AP_OpticalFlow::OpticalFlow_state{ state.surface_quality,
+        Vector2f attack_state{frontend._XXXX_attack_x + state.bodyRate.x,
+                        frontend._XXXX_attack_y + state.bodyRate.y};
+        XXXXState = AP_OpticalFlow::OpticalFlow_state{ state.surface_quality,
                                                     attack_state,
                                                     state.bodyRate};
-        frontend.update_state(pdlkState);
+        frontend.update_state(XXXXState);
     } else{
         frontend.update_state(state);
     }

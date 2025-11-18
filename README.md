@@ -19,21 +19,21 @@ The ["self.set_parameters"](Tools/autotest/arducopter.py#L314) call can be modif
 
 The attack parameters are as follows:
 
-#### RNGFND1_PDLK_ONE
+#### RNGFND1_XXXX_ONE
 
-  1: Offset the rangefinder by RNGFND1_PDLK_DIS centimeters at the next sensor update, then hold the readings there
+  1: Offset the rangefinder by RNGFND1_XXXX_DIS centimeters at the next sensor update, then hold the readings there
   
-  2: Offset the rangefinder by RNGFND1_PDLK_RAT meters at each rangefinder reading, never stops offsetting
+  2: Offset the rangefinder by RNGFND1_XXXX_RAT meters at each rangefinder reading, never stops offsetting
   
   Other: Advanced subtle attack described in forked project but is unnecessary in this evaluation
   
-#### RNGFND1_PDLK_DIS
+#### RNGFND1_XXXX_DIS
 
-  Centimeters the rangefinder readings are offset when the attack starts when PDLK_ONE is set to 1
+  Centimeters the rangefinder readings are offset when the attack starts when XXXX_ONE is set to 1
   
-#### RNGFND1_PDLK_RAT
+#### RNGFND1_XXXX_RAT
 
-  Meters the rangefinder readings are offset at each rangefinder update when PDLK_ONE is set to 2
+  Meters the rangefinder readings are offset at each rangefinder update when XXXX_ONE is set to 2
 
 ## Autotest Command
 After setting up the ArduPilot install, change to the autotest directory and run

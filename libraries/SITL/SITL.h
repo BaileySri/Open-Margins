@@ -200,11 +200,11 @@ public:
     AP_Float engine_mul;  // engine multiplier
     AP_Int32 engine_fail; // mask of engine/motor servo outputs to fail
 
-    //PADLOCK
-    AP_Float pdlk_gps_noise; //meters, Noise in simulated Latitude/Longitude
-    AP_Float pdlk_gps_spd; //m/s, Speed Accuracy provided by datasheets
-    AP_Float pdlk_acc_noise; //m/s/s, Noise in simulated accelerometer
-    AP_Float pdlk_gyro_noise; //rad/s, Noise in simulated gyroscope
+    //XXXX
+    AP_Float XXXX_gps_noise; //meters, Noise in simulated Latitude/Longitude
+    AP_Float XXXX_gps_spd; //m/s, Speed Accuracy provided by datasheets
+    AP_Float XXXX_acc_noise; //m/s/s, Noise in simulated accelerometer
+    AP_Float XXXX_gyro_noise; //rad/s, Noise in simulated gyroscope
     // initial offset on GPS lat/lon, used to shift origin
     AP_Float gps_init_lat_ofs;
     AP_Float gps_init_lon_ofs;

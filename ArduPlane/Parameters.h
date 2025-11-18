@@ -372,13 +372,13 @@ public:
         k_param__gcs,
 
         
-        //PADLOCK
+        //XXXX
         //Parameter Identities
         k_param_confirmation,
         
     };
 
-    //PADLOCK
+    //XXXX
     //Defined parameters
     AP_Int8         confirmation;
 

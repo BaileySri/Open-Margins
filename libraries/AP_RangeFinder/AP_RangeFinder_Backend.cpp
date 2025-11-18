@@ -23,7 +23,7 @@
 #include "AP_RangeFinder.h"
 #include "AP_RangeFinder/AP_RangeFinder_Params.h"
 #include "AP_RangeFinder_Backend.h"
-//PADLOCK
+//XXXX
 // Gets the sign for the attack
 template <typename T> int sgn(T val) {
     return (T(0) < val) - (val < T(0));
@@ -68,7 +68,7 @@ bool AP_RangeFinder_Backend::has_data() const {
 // update status based on distance measurement
 void AP_RangeFinder_Backend::update_status(RangeFinder::RangeFinder_State &state_arg) const
 {
-    //PADLOCK
+    //XXXX
     static bool atk_started = false;
     static bool final_msg = false;
     static float rf_init = 0; //m

@@ -611,7 +611,7 @@
   #define USER_PARAMS_ENABLED 0
 #endif
 
-//PADLOCK
+//XXXX
 //Default parameter values
 #ifndef CTRL_INV_DEFAULT
  #define CTRL_INV_DEFAULT     0

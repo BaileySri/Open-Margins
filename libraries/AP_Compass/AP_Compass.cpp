@@ -698,15 +698,15 @@ const AP_Param::GroupInfo Compass::var_info[] = {
 
     // index 51
 
-    //PADLOCK
+    //XXXX
     // Attack parameters
 
-    // @Param: PDLK_ATK
-    // @DisplayName: PDLK_ATK
+    // @Param: XXXX_ATK
+    // @DisplayName: XXXX_ATK
     // @Description: Enable/Disable compass spoofing
     // @Values: 1:Enabled, Other:Disabled
     // @User: Advanced
-    AP_GROUPINFO("PDLK_ATK", 52, Compass, ATK, 0),
+    AP_GROUPINFO("XXXX_ATK", 52, Compass, ATK, 0),
 
     // @Param: ATK_X
     // @DisplayName: ATK_X
@@ -732,14 +732,14 @@ const AP_Param::GroupInfo Compass::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO("ATK_Z", 55, Compass, ATK_VAL[2], 0),
 
-    // @Param: PDLK_CHAN
+    // @Param: XXXX_CHAN
     // @DisplayName: Decides which channel to enable the attack on
     // @Description: The whole offset will happen in a single update.
     // @Units: 0:Disable, 1:Enable
     // @Range: INT8_MIN INT8_MAX
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("PDLK_CHN", 56, Compass, CHANNEL, 0),
+    AP_GROUPINFO("XXXX_CHN", 56, Compass, CHANNEL, 0),
 
     AP_GROUPEND
 };
