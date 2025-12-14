@@ -14,7 +14,7 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         for idx = 1:iterations
             %Calculate threshold needed
             [xben, disben] = HeuristicGraphs(variance, weight(idx), 0, window, attackWindow);
-            t = ThresholdFinder(xben, disben, fpr, dx)
+            t = ThresholdFinder(xben, disben, fpr, dx);
             %Calculate TPR corresponding to attack value at t threshold
             [~, dis] = HeuristicGraphs(variance, weight(idx), attack, window, attackWindow);
             res(idx) = TPR(dis, t, dx);
@@ -46,7 +46,7 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         t = ThresholdFinder(xben, disben, fpr, dx);
         for idx = 1:iterations
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight, attack(idx), window);
+            [~, dis] = HeuristicGraphs(variance, weight, attack(idx), window, attackWindow);
             res(idx) = TPR(dis, t, dx);
             disp(idx + "/" + iterations)
         end
@@ -57,6 +57,11 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         iterations = max(size(window));
         res = zeros(iterations, 1);
         for idx = 1:iterations
+            if isequal(size(window), size(attackWindow))
+                atkW = attackWindow(idx);
+            else
+                atkW = attackWindow;
+            end
             %Calculate threshold needed
             [xben, disben] = HeuristicGraphs(variance, weight, 0, window(idx), attackWindow);
             t = ThresholdFinder(xben, disben, fpr, dx);

@@ -1,5 +1,11 @@
 
 function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, attackWindow)
+    % No attacker present, this is a benign analysis so
+    % window==attackWindow
+    if isequal(attackWindow, -1)
+        attackWindow = window;
+    end
+
     %Mean and Variance for the ith distribution, i = 1...k
     means = zeros(attackWindow, 1);
     variances = zeros(attackWindow, 1);
@@ -30,8 +36,6 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, att
         variances(i) = variance + outersum;
     end
 
-    % I can't think of a smoother way to do this combination since
-    % we have noncentral chi-square distributions with different variances.
     % We essentially have a generalized chi-square. The heuristic approach
     % I am taking here is to assemble each distribution then just convolve
     % them all into the desired distribution.
@@ -63,7 +67,6 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, att
         end
         %%%%%%%%%%%%%%%%%%%
         % This introduces some rounding error but speeds up the process
-        % For final results remove this rounding step
         originalsize = [1 length(term1); 1 length(term2)];
         newidx = originalsize;
         %

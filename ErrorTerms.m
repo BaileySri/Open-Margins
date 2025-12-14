@@ -20,11 +20,3 @@ function [res] = ErrorTerms(n, mode)
         res(i) = e(i)+outersum;
     end
 end
-
-%% Saved for later
-%syms e [1 17];
-%syms w;
-%exps = ErrorTerms(10, 2);
-%for i = 1:10
-%subs(exps(i), [e w], [ones(1, 10) 1])
-%end
