@@ -18,17 +18,15 @@ Git Repository
 │   BulkParamEvaluator.m    Wrapper function for HeuristicGraphs, generates TPR for bulk parameters
 │   MyPlot.m                Helper function, generates base plot before editing for paper
 │   ThresholdFinder.m       Helper function, Calculates threshold to meet false positive rate
-│   TPR.m                   Helper function, outputs right-tail AUC (often the TPR)
+│   AreaAbove.m             Helper function, outputs right-tail AUC
+│
+│	FigX.m					All of the FigX.m scripts generate the corresponding Fig X in the paper
 │
 └───Figures
-    │   Image files generated from scripts and used in paper
-    └───Unused
-        └── Image files that went unused in the paper
+    └───Image files generated from scripts used in the paper 
 ```
 
-## Example Runs
-
-### Enumerating Equation 4 for a window size of 5
+## Example enumerating Equation 4 for a window size of 5
 
 ``` MATLAB
 Expression(5)
@@ -38,36 +36,4 @@ Output:
 
 ``` MATLAB
 (w^4 - 3*w^3 + 3*w^2 - w)*e1 + (- w^3 + 2*w^2 - w)*e2 + (w^2 - w)*e3 + (-w)*e4 + e5 + (w^4 - 5*w^3 + 10*w^2 - 10*w + 5)*a
-```
-
-### Figure 6, probability density function as window size changes
-
-``` MATLAB
-variance = 1;
-[x, dist] = HeuristicGraphs(variance, 0, 0, 1, -1);
-[x5, dist5] = HeuristicGraphs(variance, 0, 0, 5, -1);
-[x17, dist17] = HeuristicGraphs(variance, 0, 0, 17, -1);
-[x20, dist20] = HeuristicGraphs(variance, 0, 0, 20, -1);
-MyPlot({x; x5; x17; x20}, {dist; dist5; dist17; dist20})
-xlim([0 40]);
-ylim([0 0.8]);
-```
-
-
-
-### Figure 14, TPR as weight changes
-
-Change the range of weight parameters as needed for finer resolution or faster execution
-
-``` attack-noise ratio changes
-param = "weight";
-variance = 1;
-attack = 2.1;
-window = 17;
-attackWindow = -1;
-weight = 0:0.01:1;
-res = BulkParamEvaluator(param, weight, variance, attack, window, attackWindow)
-MyPlot({weight}, {res})
-xlim([0 1]);
-xlim([0 1]);
 ```

@@ -1,7 +1,7 @@
 
 function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, attackWindow)
-    % No attacker present, this is a benign analysis so
-    % window==attackWindow
+    % When attackWindow is -1, the entire window is influenced by attack
+    % This is the normal behavior and assumption made in the paper Sec 4.3
     if isequal(attackWindow, -1)
         attackWindow = window;
     end

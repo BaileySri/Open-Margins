@@ -1,8 +1,13 @@
 function retPlot = MyPlot(x, y)
+    % MyPlot takes 2 cells for x and y axis, plots on same figure. Assumes
+    % row vectors {x1; x2; x3} {y1; y2; y3}
+    arguments
+        x cell
+        y cell
+    end
     %NOTE: Export using export_fig("FileName", "-pdf", "-png", "-transparent")
     if ~isequal(size(x, 1), size(y, 1))
-        print("Incompatible Dimensions")
-        return
+        error("Incompatible Dimensions")
     else
         retPlot = figure();
         hold on;
