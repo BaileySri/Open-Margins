@@ -1,38 +1,22 @@
-prevalences = [0.05, 0.01, 0.001];
-sigma = 1;
+windows = [1, 5, 17, 20];
+variance = 1;
 dx = 0.001;
-x = dx:dx:10;
-dt = 0.001;
-t = dt:dt:20;
+x = dx:dx:300;
 
-pd1 = pdf("chi2", x, 1);
-a = sigma;
-pd2 = pdf("ncx2", x, 1, (a)^2);
-for i = 1:size(t,2)
-    FPR(i) = AreaAbove(pd1, t(i), dx);
-    TPR(i) = AreaAbove(pd2, t(i), dx);
-    if (FPR(i) == 0) && (TPR(i) == 0)
-        break
-    end
-end
+dist1 = pdf("chi2", x, windows(1));
+dist2 = pdf("chi2", x, windows(2));
+dist3 = pdf("chi2", x, windows(3));
+dist4 = pdf("chi2", x, windows(4));
 
-Precisions = zeros(size(prevalences, 2), size(TPR, 2));
-
-for i = 1:size(prevalences, 2)
-    Precisions(i, :) = (TPR.*prevalences(i))./((TPR.*prevalences(i))+(FPR.*(1-prevalences(i))));
-end
-
-plotY = mat2cell(Precisions, ones(1, size(Precisions, 1)), size(Precisions, 2));
-[plotX{1:size(prevalences, 2)}] = deal(FPR);
-
-MyPlot(transpose(plotX), plotY);
-ylim([0, 0.4]);
-leg = legend("\pi="+prevalences);
+fig = MyPlot({x;x;x;x},{dist1; dist2; dist3; dist4});
+ylim([0, 0.2]);
+xlim([0 40]);
+leg = legend("N=" + windows);
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";
-xlabel("Recall");
-ylabel("Precision")
+xlabel("Test Metric");
+ylabel("Probability")
 title("")
 
-export_fig("PC", "-pdf", "-png", "-transparent")
+export_fig("FPR Window", "-pdf", "-png", "-transparent")
