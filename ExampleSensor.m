@@ -1,4 +1,4 @@
-% Example described in Section 4.4
+% Example described in Section 4.3.3
 attack  = 2; % Position accuracy
 weight  = 0.5;
 window  = 5;
