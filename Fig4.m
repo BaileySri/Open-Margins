@@ -12,6 +12,9 @@ fig = MyPlot({x;x;x;x},{dist1; dist2; dist3; dist4});
 ylim([0, 0.2]);
 xlim([0 40]);
 leg = legend("N=" + windows);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

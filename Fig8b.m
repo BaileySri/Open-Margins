@@ -15,6 +15,9 @@ MyPlot(transpose(resX), transpose(resDist));
 xlim([0, 60]);
 ylim([0 0.08]);
 leg = legend("w=" + weight);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

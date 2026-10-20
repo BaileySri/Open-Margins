@@ -17,6 +17,3 @@ function [exp] = Expression(n)
     
     exp = collect(expand(r(end)), [e a]);
 end
-
-% Maybe use this for automated subsitution
-% norm(x, mu, sigma) = (1/sqrt(2*pi*sigma^2))*exp(-(x-mu)^2/(2*sigma^2));

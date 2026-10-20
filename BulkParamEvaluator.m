@@ -2,7 +2,6 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
 %BULKPARAMEVALUATOR Calculate TPR points as a parameter changes
 %   Calculates TPR as a specific parameter is changed. Others are constant
     %Constant
-    dx = 0.001;
     fpr = 0.01;
     %
     if strcmp(param, "weight")
@@ -14,10 +13,10 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         for idx = 1:iterations
             %Calculate threshold needed
             [xben, disben] = HeuristicGraphs(variance, weight(idx), 0, window, attackWindow);
-            t = ThresholdFinder(xben, disben, fpr, dx);
+            t = ThresholdFinder(xben, disben, fpr);
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight(idx), attack, window, attackWindow);
-            res(idx) = AreaAbove(dis, t, dx);
+            [x, dis] = HeuristicGraphs(variance, weight(idx), attack, window, attackWindow);
+            res(idx) = AreaAbove(x, dis, t);
             disp(idx + "/" + iterations)
         end
     elseif strcmp(param, "variance")
@@ -29,10 +28,10 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         for idx = 1:iterations
             %Calculate threshold needed
             [xben, disben] = HeuristicGraphs(variance(idx), weight, 0, window, attackWindow);
-            t = ThresholdFinder(xben, disben, fpr, dx);
+            t = ThresholdFinder(xben, disben, fpr);
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance(idx), weight, attack, window, attackWindow);
-            res(idx) = AreaAbove(dis, t, dx);
+            [x, dis] = HeuristicGraphs(variance(idx), weight, attack, window, attackWindow);
+            res(idx) = AreaAbove(x, dis, t);
             disp(idx + "/" + iterations)
         end
     elseif strcmp(param, "attack")
@@ -43,11 +42,11 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         res = zeros(iterations, 1);
         %Calculate threshold needed for
         [xben, disben] = HeuristicGraphs(variance, weight, 0, window, attackWindow);
-        t = ThresholdFinder(xben, disben, fpr, dx);
+        t = ThresholdFinder(xben, disben, fpr);
         for idx = 1:iterations
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight, attack(idx), window, attackWindow);
-            res(idx) = AreaAbove(dis, t, dx);
+            [x, dis] = HeuristicGraphs(variance, weight, attack(idx), window, attackWindow);
+            res(idx) = AreaAbove(x, dis, t);
             disp(idx + "/" + iterations)
         end
     elseif strcmp(param, "window")
@@ -60,10 +59,10 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
             atkW = attackWindow(idx);
             %Calculate threshold needed
             [xben, disben] = HeuristicGraphs(variance, weight, 0, window(idx), atkW);
-            t = ThresholdFinder(xben, disben, fpr, dx);
+            t = ThresholdFinder(xben, disben, fpr);
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight, attack, window(idx), atkW);
-            res(idx) = AreaAbove(dis, t, dx);
+            [x, dis] = HeuristicGraphs(variance, weight, attack, window(idx), atkW);
+            res(idx) = AreaAbove(x, dis, t);
             disp(idx + "/" + iterations)
         end
     elseif strcmp(param, "attackWindow")
@@ -75,10 +74,10 @@ function [res] = BulkParamEvaluator(param, weight, variance, attack, window, att
         for idx = 1:iterations
             %Calculate threshold needed
             [xben, disben] = HeuristicGraphs(variance, weight, 0, window, attackWindow(idx));
-            t = ThresholdFinder(xben, disben, fpr, dx);
+            t = ThresholdFinder(xben, disben, fpr);
             %Calculate TPR corresponding to attack value at t threshold
-            [~, dis] = HeuristicGraphs(variance, weight, attack, window, attackWindow(idx));
-            res(idx) = AreaAbove(dis, t, dx);
+            [x, dis] = HeuristicGraphs(variance, weight, attack, window, attackWindow(idx));
+            res(idx) = AreaAbove(x, dis, t);
             disp(idx + "/" + iterations)
         end
     else

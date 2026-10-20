@@ -6,129 +6,146 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, att
         attackWindow = window;
     end
 
-    %Mean and Variance for the ith distribution, i = 1...k
-    means = zeros(attackWindow, 1);
-    variances = zeros(attackWindow, 1);
+    %--- Setup ---% 
+    % Noise coefficient matrix V
+    % V is lower triangular with 1s on the diagonal.
+    % The entries below the diagonal are:
+    %   V[n,j] = -w * sum(V[i,j], i = j...n-1),  for j < n
+    %
+    % r[1] = V[1,1] * e[1]
+    % r[2] = V[2,1] * e[1] + V[2,2] * e[2]
+    %  ...
+    % r[n] = V[n,1] * e[1] + V[n,2] * e[2] + ... + V[n,n] * e[n] 
+    %
+    % Attack coefficient vector s:
+    % s(1) = 1
+    % s(2) = 2 - w * s(1) 
+    % ...
+    % s(n) = n - w * [s(1) + ... + s(n-1)]
+    %
+    % These coefficients can be confirmed with the
+    % existing Expression(n) and AttackTerms(n) helpers
 
-    %Mean is dependent only on attack and weight term
-    for i = 1:attackWindow
-        innersum = 0;
-        for j = 1:i
-            innersum = innersum + (-1)^(i+j)*nchoosek(i, j-1)*weight^(i-j);
+    % This sets up the matrix V and vector s
+    V = zeros(window, window);
+    s = zeros(window, 1);
+    V(1,1) = 1;
+    s(1) = 1;
+    for n = 2:window
+        % Accumulate the column sum of prior rows
+        % acc(j) is the sum of V(i,j) over i = j...n-1
+        acc = zeros(1, n-1);
+        for i = 1:n-1
+            acc(1:i) = acc(1:i) + V(i, 1:i);
         end
-        means(i) = attack*innersum;
+        V(n, 1:n-1) = -weight * acc;
+        V(n, n) = 1;
+
+        if n <= attackWindow
+            s(n) = n - weight * sum(s(1:n-1));
+        else
+            % Catch the case where step n is not attacked
+            s(n) = -weight * sum(s(1:n-1));
+        end
     end
 
-    %Variance is dependent on error and weight term
-    for i = 1:attackWindow
-        outersum = 0;
-        for j = 1:i-1
-            innersum = 0;
-            for x = 1:j
-                innersum = innersum + (-1)^(j+x)*weight^(x)*nchoosek(j-1, x-1);
-            end
-            % This part doesn't look the same as the summation form in the
-            % paper but that's because the random variables, e[n], have
-            % additive variance. I just dropped the alternating -1 and
-            % squared the coefficient on the variance, i.e., innersum.
-            outersum = outersum + variance*(innersum)^2;
-        end
-        variances(i) = variance + outersum;
-    end
+    %--- Eigendecomposition ---%
+    % mean residual vector
+    mu = attack * s;
+    % covariance matrix of residuals
+    C  = variance * (V * V');
 
-    % We essentially have a generalized chi-square. The heuristic approach
-    % I am taking here is to assemble each distribution then just convolve
-    % them all into the desired distribution.
-   
+    % C*Q = Q*D
+    % Q is a matrix with columns corresponding to right eigenvectors
+    % D is a diagonal matrix of eigenvalues
+    [Q, D] = eig(C);
+    % This converts D to just a vector of the eigenvalues
+    D = diag(D);
+    % Mean in eigenvector basis
+    Qmu = Q' * mu;
+
     % Resolution
-    dx = 0.001;
-    max = 3500;
-    x = dx:dx:max;
-    
-    %If mean is 0, ncx2 fails
-    if isequal(means(1), 0)
-        % Scaled Chi-square, alpha=1/2 and theta=2*stddev
-        % alpha=1/2 because each term has 1 degree of freedom
-        term1 = pdf("gamma", x, 1/2, 2*variance);
+    dx = 0.01;
+    % Cutoff probability
+    tailTol = 1e-10;
+
+    % First lambda to start
+    lambda1 = Qmu(1)^2 / D(1);
+    % Calculating per distribution bins to speed up convolution
+    componentMax = D(1) * ncx2inv(1 - tailTol/(2*window), 1, lambda1);
+    componentMax = ceil(componentMax/dx) * dx;
+    edges = 0:dx:componentMax;
+
+    if isequal(lambda1, 0)
+        %Use gamma equivalent when lambda == 0
+        term1 = diff(gamcdf(edges, 1/2, 2*D(1)));
+        upperTail = gammainc(componentMax/(2*D(1)), 1/2, "upper");
     else
-        %Non-zero mean, non-central chi square
-        term1 = pdf("ncx2", x, 1, means(1)/variances(1));
+        %Otherwise use scaled noncentral chi-square
+        term1 = diff(ncx2cdf(edges/D(1), 1, lambda1));
+        upperTail = ncx2cdf(componentMax/D(1), 1, lambda1, "upper");
     end
+
+    % Guarding against losing mass because of max value on axis
+    if upperTail > (tailTol/window)
+        error("Mass cutoff by max. Raise max value.")
+    end
+
+    term1x = edges(1:end-1) + dx/2;
+
+    % Trim leading/trailing zeros
+    idx1 = find(term1);
+    term1 = term1(idx1(1):idx1(end));
+    term1x = term1x(idx1(1):idx1(end));
+    convx = term1x;
 
     % Everything gets stored back in term1, so it just gets reused from
     % here forward
-    convx = x;
-    for i = 2:attackWindow
-        % Weighed Attack
-        if isequal(means(i), 0)
-            term2 = pdf("gamma", x, 1/2, 2*variances(i));
+    for i = 2:window
+        % noncentrality
+        lambda = Qmu(i)^2 / D(i);
+        % Calculating per distribution bins to speed up convolution
+        componentMax = D(i) * ncx2inv(1 - tailTol/(2*window), 1, lambda);
+        componentMax = ceil(componentMax/dx) * dx;
+        edges = 0:dx:componentMax;
+        if isequal(lambda, 0)
+            %Use gamma equivalent when lambda == 0
+            term2 = diff(gamcdf(edges, 1/2, 2*D(i)));
+            upperTail = gammainc(componentMax/(2*D(i)), 1/2, "upper");
         else
-            term2 = pdf("ncx2", x, 1, means(1)/variances(i));
+            %Otherwise use scaled noncentral chi-square
+            term2 = diff(ncx2cdf(edges/D(i), 1, lambda));
+            upperTail = ncx2cdf(componentMax/D(i), 1, lambda, "upper");
         end
-        %%%%%%%%%%%%%%%%%%%
-        % This introduces some rounding error but speeds up the process
-        originalsize = [1 length(term1); 1 length(term2)];
-        newidx = originalsize;
-        %
-        term1 = round(term1, 5);
-        term1 = term1(find(term1, 1, 'first'):end);
-        newidx(1, 1) = originalsize(1, 2) - length(term1) + 1;
-        term1 = term1(1:find(term1, 1, 'last'));
-        newidx(1, 2) = newidx(1, 1) + length(term1);
-        %
-        term2 = round(term2, 5);
-        term2 = term2(find(term2, 1, 'first'):end);
-        newidx(2, 1) = originalsize(2, 2) - length(term2) + 1;
-        term2 = term2(1:find(term2, 1, 'last'));
-        newidx(2, 2) = newidx(2, 1) + length(term2);
-        %%%%%%%%%%%%%%%%%%%%
-        
-        convPDF = conv(term1, term2);
-        term1 = convPDF/trapz(dx, convPDF);
-        %%% The indexes on convx will need to be changed after removing
-        %%% rounding
-        convx = x(newidx(1, 1)) + x(newidx(2, 1)): ...
+
+        % Guarding against losing mass because of max value on axis
+        if upperTail > (tailTol/window)
+            error("Mass cutoff by max. Raise max value.")
+        end
+
+        term2x = edges(1:end-1) + dx/2;
+
+        % Trim leading/trailing zeros
+        idx1 = find(term1);
+        term1 = term1(idx1(1):idx1(end));
+        term1x = term1x(idx1(1):idx1(end));
+        idx2 = find(term2);
+        term2 = term2(idx2(1):idx2(end));
+        term2x = term2x(idx2(1):idx2(end));
+
+        % Convolve bin probabilities, Switched to FFT for speed
+        convLength = numel(term1) + numel(term2) - 1;
+        fftLength = 2^nextpow2(convLength);
+        convMass = ifft(fft(term1, fftLength) .* fft(term2, fftLength));
+        term1 = max(real(convMass(1:convLength)), 0);
+        convx = term1x(1) + term2x(1): ...
                 dx: ...
-                x(newidx(1, 2)) + x(newidx(2,2)) - 2*dx;
+                term1x(1) + term2x(1) + (numel(term1)-1)*dx;
+        term1x = convx;
     end
 
-    % Convolution of benign terms if there are any
-    if ~isequal(attackWindow, window)
-        Nminusk = window - attackWindow;
-
-        % Benign term
-        term2 = pdf("chi2", x, Nminusk);
-
-        %%%%%%%%%%%%%%%%%%%
-        % This introduces some rounding error but speeds up the process
-        % For final results remove this rounding step
-        originalsize = [1 length(term1); 1 length(term2)];
-        newidx = originalsize;
-        %
-        term1 = round(term1, 5);
-        term1 = term1(find(term1, 1, 'first'):end);
-        newidx(1, 1) = originalsize(1, 2) - length(term1) + 1;
-        term1 = term1(1:find(term1, 1, 'last'));
-        newidx(1, 2) = newidx(1, 1) + length(term1);
-        %
-        term2 = round(term2, 5);
-        term2 = term2(find(term2, 1, 'first'):end);
-        newidx(2, 1) = originalsize(2, 2) - length(term2) + 1;
-        term2 = term2(1:find(term2, 1, 'last'));
-        newidx(2, 2) = newidx(2, 1) + length(term2);
-        %%%%%%%%%%%%%%%%%%%%
-        
-        convPDF = conv(term1, term2);
-        term1 = convPDF/trapz(dx, convPDF);
-        %%% The indexes on convx will need to be changed after removing
-        %%% rounding
-        convx = x(newidx(1, 1)) + x(newidx(2, 1)): ...
-                dx: ...
-                x(newidx(1, 2)) + x(newidx(2,2)) - 2*dx;
-    end
-   
-    %Normalize before returning
-    term1 = term1/trapz(dx, term1);
+    % Normalize and convert to PDF
+    term1 = term1 / sum(term1) / dx;
     retX = convx;
     retDist = term1;
 end

@@ -1,7 +1,7 @@
 dx = 0.001;
 x = dx:dx:300;
 sigma = 1;
-weight = 0;
+weight = 1;
 variance = sigma^2;
 attack = 0;
 window = [1, 5, 17, 20];
@@ -15,6 +15,9 @@ MyPlot(transpose(resX), transpose(resDist));
 xlim([0, 40]);
 ylim([0 0.2]);
 leg = legend("N=" + window);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

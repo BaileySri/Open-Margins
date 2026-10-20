@@ -9,8 +9,8 @@ pd1 = pdf("chi2", x, 1);
 a = sigma;
 pd2 = pdf("ncx2", x, 1, (a)^2);
 for i = 1:size(t,2)
-    FPR(i) = AreaAbove(pd1, t(i), dx);
-    TPR(i) = AreaAbove(pd2, t(i), dx);
+    FPR(i) = AreaAbove(x, pd1, t(i));
+    TPR(i) = AreaAbove(x, pd2, t(i));
     if (FPR(i) == 0) && (TPR(i) == 0)
         break
     end
@@ -28,6 +28,9 @@ plotY = mat2cell(Precisions, ones(1, size(Precisions, 1)), size(Precisions, 2));
 MyPlot(transpose(plotX), plotY);
 ylim([0, 0.4]);
 leg = legend("\pi="+prevalences);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

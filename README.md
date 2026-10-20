@@ -10,24 +10,24 @@ Cyber-physical systems have been the center of proactive defense research agains
 Git Repository
 │   README.md
 │
-│   AttackTerms.m           Symbolically generate only the attack term from equation 4
-│   ErrorTerms.m            Symbolically generate only the error terms from equation 4
-│   Expression.m            Symbolically generate the result of expanding equation 4
+│   AttackTerms.m           Symbolically generate attack contribution
+│   ErrorTerms.m            Symbolically generate measurement error contribution
+│   Expression.m            Symbolically expand complete innovation for a window N
 │
-│   HeuristicGraphs.m       Generates distributions of equation 4 with convolution
+│   HeuristicGraphs.m       Numerically computes the detection statistic distribution
 │   BulkParamEvaluator.m    Wrapper function for HeuristicGraphs, generates TPR for bulk parameters
 │   MyPlot.m                Helper function, generates base plot before editing for paper
 │   ThresholdFinder.m       Helper function, Calculates threshold to meet false positive rate
 │   AreaAbove.m             Helper function, outputs right-tail AUC
 │
-│	FigX.m					All of the FigX.m scripts generate the corresponding Fig X in the paper
-│   ExampleSensor.m			Generates the TPR graph corresponding to the example in Section 4.3.3
+│   FigX.m                  All of the FigX.m scripts generate the corresponding Fig X in the paper
+│   ExampleSensor.m         Generates the TPR graph corresponding to the example in Section 4.3.3
 │
 └───Figures
     └───Image files generated from scripts used in the paper 
 ```
 
-## Example enumerating Equation 4 for a window size of 5
+## Example expanding the whole window innovation recurrence for a window size of 5
 
 ``` MATLAB
 Expression(5)

@@ -1,18 +1,18 @@
-function [ret] = ThresholdFinder(x, dist, fpr, dx)
-    % Roughly approximate a starting point
-    startIdx = size(nonzeros(round(dist, 4)), 1);
-    % Speeds up computation and introduces negligible rounding errors
-    endIdx = size(nonzeros(round(dist, 6)), 1);
-    ret = -1; % We will throw an error if ret is still -1 at end
-    for idx = startIdx:-1:1
-        percent = trapz(dx, dist(idx:endIdx));
-        if percent >= fpr
-            ret = x(idx);
-            return
-        end
-    end
-    if isequal(ret, -1)
+function [ret] = ThresholdFinder(x, dist, fpr)
+    % Calculate tail areas in one pass using the trapezoidal rule
+    x = x(:);
+    dist = dist(:);
+    intervalArea = diff(x) .* (dist(1:end-1) + dist(2:end)) / 2;
+    tailArea = [flipud(cumsum(flipud(intervalArea))); 0];
+
+    % Find the x values around fpr
+    idx = find(tailArea >= fpr, 1, "last");
+    if isempty(idx) || idx == numel(x)
         error("No threshold found, manually inspect arguments.")
     end
-end
 
+    % Estimate threshold
+    fraction = (tailArea(idx) - fpr) / ...
+        (tailArea(idx) - tailArea(idx + 1));
+    ret = x(idx) + fraction * (x(idx + 1) - x(idx));
+end
