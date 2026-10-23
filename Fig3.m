@@ -23,11 +23,14 @@ for i = 1:size(prevalences, 2)
 end
 
 plotY = mat2cell(Precisions, ones(1, size(Precisions, 1)), size(Precisions, 2));
-[plotX{1:size(prevalences, 2)}] = deal(FPR);
+[plotX{1:size(prevalences, 2)}] = deal(TPR);
 
 MyPlot(transpose(plotX), plotY);
 ylim([0, 0.4]);
 leg = legend("\pi="+prevalences);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

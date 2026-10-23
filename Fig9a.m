@@ -4,7 +4,7 @@ sigma = 1;
 param = "attack";
 weight = 0.5;
 variance = sigma^2;
-attack = 0:0.1:6;
+attack = 0:0.1:1.5;
 window = 17;
 attackWindow = -1; % Assume attack is over whole window
 
@@ -13,6 +13,7 @@ res = BulkParamEvaluator(param, weight, variance, attack, window, attackWindow);
 MyPlot({attack}, {res});
 leg = legend("");
 set(leg, 'visible', 'off');
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

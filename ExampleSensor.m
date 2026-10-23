@@ -2,17 +2,16 @@
 attack  = 2; % Position accuracy
 weight  = 0.5;
 window  = 5;
-noise   = 0.1*attack:0.01*attack:1.5;   % 0.1a to roughly where TPR=0
-                                        % TPR goes to 0 by 0.75a, this saves
-                                        % time by stopping at 1.5
+noise   = 0.1*attack:0.01*attack:1.2*attack;
 
 res = BulkParamEvaluator("variance", weight, noise.^2, attack, window, -1);
 
 MyPlot({noise}, {res});
 ylim([0 1]);
-xlim([0.2 1.5]);
+xlim([0.1*attack 1.2*attack]);
 leg = legend("");
 set(leg, 'visible', 'off');
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

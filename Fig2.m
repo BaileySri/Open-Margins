@@ -43,7 +43,10 @@ for i = 1:size(t,2)
 end
 
 MyPlot({FPR;FPR;FPR;FPR}, {TPR0_5;TPR1;TPR3;TPR6})
-leg = legend("a=\sigma_{e}/2","a=\sigma_{e}","a=3\sigma_{e}","a=6\sigma_{e}");
+leg = legend("a=\sigma_{e}/2","a=\sigma_{e}","a=3\sigma_{e}","a=6\sigma_{e}", "Location", "southeast");
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

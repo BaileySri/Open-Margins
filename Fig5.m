@@ -114,6 +114,9 @@ res3 = pd1/trapz(dx, pd1);
 MyPlot({convx1; convx2; convx3}, {res1; res2; res3})
 xlim([0, 40]);
 leg = legend("N=" + window);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

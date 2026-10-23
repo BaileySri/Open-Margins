@@ -4,7 +4,7 @@ sigma = 1;
 param = "weight";
 weight = 0:0.05:1;
 variance = sigma^2;
-attack = 2.1;
+attack = 0.7*sigma;
 window = 17;
 attackWindow = -1; % Assume attack is over whole window
 
@@ -14,6 +14,7 @@ MyPlot({weight}, {res});
 ylim([0 1])
 leg = legend("");
 set(leg, 'visible', 'off');
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

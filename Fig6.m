@@ -185,6 +185,9 @@ res5 = pd1/trapz(dx, pd1);
 MyPlot({convx1;convx2;convx3;convx4;convx5}, {res1;res2;res3;res4;res5})
 xlim([0, 200]);
 leg = legend("a=" + attack);
+leg.Color = "white";
+leg.TextColor = "black";
+theme(gcf, "light")
 ax = gca;
 ax.FontSize = 12;
 ax.FontWeight = "bold";

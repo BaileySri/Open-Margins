@@ -52,7 +52,8 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, att
         term1 = pdf("gamma", x, 1/2, 2*variance);
     else
         %Non-zero mean, non-central chi square
-        term1 = pdf("ncx2", x, 1, means(1)/variances(1));
+        term1 = pdf("ncx2", x ./ variances(1), 1, ...
+                     means(1)^2 / variances(1)) ./ variances(1);
     end
 
     % Everything gets stored back in term1, so it just gets reused from
@@ -63,7 +64,8 @@ function [retX, retDist] = HeuristicGraphs(variance, weight, attack, window, att
         if isequal(means(i), 0)
             term2 = pdf("gamma", x, 1/2, 2*variances(i));
         else
-            term2 = pdf("ncx2", x, 1, means(1)/variances(i));
+            term2 = pdf("ncx2", x ./ variances(i), 1, ...
+                         means(i)^2 / variances(i)) ./ variances(i);
         end
         %%%%%%%%%%%%%%%%%%%
         % This introduces some rounding error but speeds up the process
